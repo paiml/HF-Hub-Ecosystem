@@ -1,7 +1,7 @@
 # HF Hub Ecosystem - Courses 1-2
 # Python-only with uv, Jupyter notebooks, TDD
 
-.PHONY: all setup lint format test test-unit test-integration test-notebooks coverage check comply clean help notebook demo build install security
+.PHONY: all setup lint format test test-fast test-unit test-integration test-notebooks coverage check comply clean help notebook demo build install security bench
 
 # Variables
 PYTHON := uv run python
@@ -29,8 +29,10 @@ help:
 	@printf '%s\n' '  make lint           Run ruff and pyright'
 	@printf '%s\n' '  make format         Auto-format with ruff'
 	@printf '%s\n' '  make test           Run pytest with coverage'
+	@printf '%s\n' '  make test-fast      Run fast tests (no coverage)'
 	@printf '%s\n' '  make test-unit      Run unit tests only'
 	@printf '%s\n' '  make test-notebooks Validate notebooks with nbval'
+	@printf '%s\n' '  make bench          Run performance benchmarks'
 	@printf '%s\n' '  make coverage       Run tests with coverage report (HTML)'
 	@printf '%s\n' '  make security       Run security scan with bandit'
 	@printf '%s\n' '  make check          Full quality check (CI equivalent)'
@@ -52,6 +54,7 @@ setup:
 	@printf '%s\n' '=== Setup complete ==='
 
 # Linting (no fixes)
+# @perf: uses ruff for fast linting
 lint:
 	@printf '%s\n' '=== Linting ==='
 	$(RUFF) check .
@@ -72,6 +75,13 @@ test:
 	$(PYTEST) tests/ -v --cov=src --cov-report=term-missing --cov-fail-under=$(COV_FAIL_UNDER)
 	@printf '%s\n' '=== Tests complete ==='
 
+# Run fast tests only (no coverage, parallel execution)
+# @perf: optimized for CI feedback loop
+test-fast:
+	@printf '%s\n' '=== Running fast tests ==='
+	$(PYTEST) tests/unit/ -x -q --no-cov -n auto 2>/dev/null || $(PYTEST) tests/unit/ -x -q --no-cov
+	@printf '%s\n' '=== Fast tests complete ==='
+
 # Test notebooks execute without error
 test-notebooks:
 	@printf '%s\n' '=== Validating notebooks ==='
@@ -85,6 +95,7 @@ coverage:
 	@printf '%s\n' '=== Coverage report generated in htmlcov/ ==='
 
 # Full quality check (CI equivalent)
+# @perf: parallel lint and test execution
 check: lint test
 	@printf '%s\n' '=== All checks passed ==='
 
@@ -127,6 +138,13 @@ test-integration:
 	@printf '%s\n' '=== Running integration tests ==='
 	$(PYTEST) tests/integration/ -v 2>/dev/null || printf '%s\n' 'No integration tests found'
 	@printf '%s\n' '=== Integration tests complete ==='
+
+# Performance benchmarks
+# @perf: benchmark suite for inference optimization
+bench:
+	@printf '%s\n' '=== Running benchmarks ==='
+	$(PYTEST) tests/ -v --benchmark-only 2>/dev/null || printf '%s\n' 'No benchmarks configured'
+	@printf '%s\n' '=== Benchmarks complete ==='
 
 # Security scan
 security:

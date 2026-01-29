@@ -51,6 +51,9 @@ setup:
 	@printf '%s\n' '=== Setting up environment ==='
 	uv sync --all-extras
 	uv run pre-commit install 2>/dev/null || true
+	@# Install optimized pre-commit hook
+	cp hooks/pre-commit .git/hooks/pre-commit 2>/dev/null || true
+	chmod +x .git/hooks/pre-commit 2>/dev/null || true
 	@printf '%s\n' '=== Setup complete ==='
 
 # Linting (no fixes)

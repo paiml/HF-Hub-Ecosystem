@@ -1,7 +1,7 @@
 # HF Hub Ecosystem - Courses 1-2
 # Python-only with uv, Jupyter notebooks, TDD
 
-.PHONY: all setup lint format test test-notebooks coverage check comply clean help
+.PHONY: all setup lint format test test-notebooks coverage check comply clean help notebook
 
 # Variables
 PYTHON := uv run python

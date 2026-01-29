@@ -1,0 +1,47 @@
+# PMAT Quality Gates Configuration
+# See: https://github.com/paiml/paiml-mcp-agent-toolkit
+
+[gates]
+# Enable/disable specific quality gates
+complexity = true
+dead_code = true
+satd = true
+security = true
+entropy = false  # Disabled for Python projects
+duplicates = true
+coverage = true
+documentation = true
+provability = true
+
+[thresholds]
+# Complexity thresholds
+max_cyclomatic_complexity = 30
+max_cognitive_complexity = 25
+
+# Coverage thresholds
+min_test_coverage = 100.0
+min_line_coverage = 100.0
+
+# Documentation thresholds
+min_doc_coverage = 80.0
+
+# Provability thresholds (relaxed for educational project)
+min_provability_score = 0.60
+
+# Entropy thresholds (relaxed for Python)
+min_pattern_diversity = 0.0
+
+[python]
+# Python-specific settings
+enabled = true
+test_framework = "pytest"
+coverage_tool = "pytest-cov"
+linter = "ruff"
+type_checker = "pyright"
+
+[notebooks]
+# Jupyter notebook settings
+validate = true
+max_cells = 50
+max_output_lines = 100
+require_verification = true

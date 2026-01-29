@@ -7,9 +7,11 @@
 **Courses 1-2** of the Hugging Face ML Specialization
 
 [![CI](https://github.com/paiml/HF-Hub-Ecosystem/actions/workflows/ci.yml/badge.svg)](https://github.com/paiml/HF-Hub-Ecosystem/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/paiml/HF-Hub-Ecosystem/actions)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/badge/package%20manager-uv-green.svg)](https://github.com/astral-sh/uv)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![TDG Score](https://img.shields.io/badge/TDG-A%20(90.7%25)-brightgreen.svg)](https://github.com/paiml/paiml-mcp-agent-toolkit)
 
 ## Overview
 
@@ -37,6 +39,54 @@ make check
 
 # Launch Jupyter Lab
 make lab
+```
+
+## Usage
+
+### Using the Library
+
+```python
+from hf_ecosystem import search_models, create_pipeline, get_device
+
+# Search for models on the Hub
+models = search_models(task="text-classification", limit=5)
+for model in models:
+    print(f"{model.modelId}: {model.downloads} downloads")
+
+# Create an inference pipeline with automatic device detection
+classifier = create_pipeline(
+    "sentiment-analysis",
+    model="distilbert-base-uncased-finetuned-sst-2-english"
+)
+
+# Run inference
+result = classifier("I love this course!")
+print(result)  # [{'label': 'POSITIVE', 'score': 0.9998}]
+
+# Check available device
+device = get_device()  # Returns 'cuda', 'mps', or 'cpu'
+```
+
+### Running Notebooks
+
+```bash
+# Launch Jupyter Lab
+make notebook
+
+# Navigate to notebooks/course1/week1/ to begin
+```
+
+### Running Tests
+
+```bash
+# Run all tests with coverage
+make test
+
+# Run a specific test file
+uv run pytest tests/unit/test_device.py -v
+
+# Generate HTML coverage report
+make coverage
 ```
 
 ## Course Structure

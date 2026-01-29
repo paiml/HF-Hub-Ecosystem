@@ -59,6 +59,13 @@ make notebook
 
 ### Demo Output
 
+<p align="center">
+  <img src="docs/diagrams/demo.svg" alt="Demo Output" width="700">
+</p>
+
+<details>
+<summary>Click to see text output</summary>
+
 ```
 ╔══════════════════════════════════════════════════════════╗
 ║   🤗 HF Hub Ecosystem Demo                               ║
@@ -99,6 +106,8 @@ make notebook
 
   ✓ All demonstrations completed successfully
 ```
+
+</details>
 
 ## Usage
 

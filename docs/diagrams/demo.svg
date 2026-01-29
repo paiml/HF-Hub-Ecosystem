@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400">
+  <rect width="700" height="400" rx="10" fill="#1a1a2e"/>
+  <rect x="10" y="10" width="680" height="30" rx="5" fill="#16213e"/>
+  <circle cx="30" cy="25" r="6" fill="#ff5f56"/>
+  <circle cx="50" cy="25" r="6" fill="#ffbd2e"/>
+  <circle cx="70" cy="25" r="6" fill="#27c93f"/>
+  <text x="350" y="29" fill="#8892b0" font-family="monospace" font-size="12" text-anchor="middle">HF Hub Ecosystem Demo</text>
+
+  <text x="30" y="70" fill="#66d9ef" font-family="monospace" font-size="14">$ make demo</text>
+
+  <text x="30" y="100" fill="#a6e22e" font-family="monospace" font-size="12">╔══════════════════════════════════════════════════════════╗</text>
+  <text x="30" y="116" fill="#a6e22e" font-family="monospace" font-size="12">║   🤗 HF Hub Ecosystem Demo                               ║</text>
+  <text x="30" y="132" fill="#a6e22e" font-family="monospace" font-size="12">╚══════════════════════════════════════════════════════════╝</text>
+
+  <text x="30" y="160" fill="#66d9ef" font-family="monospace" font-size="12">▶ Device Detection</text>
+  <text x="30" y="178" fill="#a6e22e" font-family="monospace" font-size="12">  ✓ Detected device: cuda</text>
+
+  <text x="30" y="206" fill="#66d9ef" font-family="monospace" font-size="12">▶ Hub Model Search</text>
+  <text x="30" y="224" fill="#8892b0" font-family="monospace" font-size="12">  │ distilbert-base-uncased-finetuned...   (3,952,203 ↓)</text>
+
+  <text x="30" y="252" fill="#66d9ef" font-family="monospace" font-size="12">▶ Sentiment Analysis Pipeline</text>
+  <text x="30" y="270" fill="#8892b0" font-family="monospace" font-size="12">  ● Running inference...</text>
+  <text x="30" y="288" fill="#a6e22e" font-family="monospace" font-size="12">  │ ↑ I love this library!         POSITIVE (99.9%)</text>
+  <text x="30" y="306" fill="#f92672" font-family="monospace" font-size="12">  │ ↓ This is terrible.            NEGATIVE (99.9%)</text>
+
+  <text x="30" y="340" fill="#a6e22e" font-family="monospace" font-size="12">════════════════════════════════════════════════════════════</text>
+  <text x="30" y="358" fill="#a6e22e" font-family="monospace" font-size="12">║ Demo Complete! ✓</text>
+  <text x="30" y="376" fill="#a6e22e" font-family="monospace" font-size="12">════════════════════════════════════════════════════════════</text>
+</svg>

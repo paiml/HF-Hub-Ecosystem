@@ -23,6 +23,7 @@
 - [Key Dependencies](#key-dependencies)
 - [License](#license)
 - [Contributing](#contributing)
+- [Troubleshooting](#troubleshooting)
 - [Resources](#resources)
 
 ## Overview
@@ -259,6 +260,14 @@ Apache 2.0 - See [LICENSE](LICENSE) for details.
 2. Create a feature branch
 3. Run `make check` before committing
 4. Submit a pull request
+
+## Troubleshooting
+
+**CUDA out of memory**: Reduce batch size or use `device_map="auto"` for model sharding.
+
+**Model download slow**: Set `HF_HOME` environment variable to a location with more space.
+
+**Import errors**: Run `make setup` to ensure all dependencies are installed.
 
 ## Resources
 

@@ -1,0 +1,21 @@
+[project]
+name = "hf-hub-ecosystem"
+type = "python-notebook"
+
+[quality]
+test_coverage_min = 95
+complexity_max = 10
+doc_coverage_min = 80
+
+[notebooks]
+max_cells = 50
+max_output_lines = 100
+require_verification_cell = true
+
+[dependencies]
+allow_floating = false
+max_direct_deps = 30
+
+[ci]
+require_passing = true
+timeout_minutes = 30

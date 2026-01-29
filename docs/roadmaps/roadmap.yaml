@@ -1,0 +1,238 @@
+roadmap_version: '1.0'
+github_enabled: true
+github_repo: paiml/HF-Hub-Ecosystem
+roadmap:
+- id: PMAT-001
+  github_issue: null
+  item_type: task
+  title: 'Repository setup: pyproject.toml, Makefile, CI'
+  status: inprogress
+  priority: high
+  assigned_to: null
+  created: 2026-01-29T08:39:45Z
+  updated: 2026-01-29T08:41:29.054916685+00:00
+  spec: null
+  acceptance_criteria:
+  - Initialize Python repo with uv, create Makefile with lint/test/check targets, setup GitHub Actions CI
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - setup
+  - infrastructure
+  notes: null
+- id: PMAT-002
+  github_issue: null
+  item_type: task
+  title: 'Source modules: hf_ecosystem package'
+  status: planned
+  priority: high
+  assigned_to: null
+  created: 2026-01-29T08:39:54Z
+  updated: 2026-01-29T08:39:54Z
+  spec: null
+  acceptance_criteria:
+  - Create src/hf_ecosystem with hub, inference, data, training submodules
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - code
+  - modules
+  notes: null
+- id: PMAT-003
+  github_issue: null
+  item_type: task
+  title: 'Course 1 Week 1: Hub Navigation notebooks'
+  status: planned
+  priority: medium
+  assigned_to: null
+  created: 2026-01-29T08:39:54Z
+  updated: 2026-01-29T08:39:54Z
+  spec: null
+  acceptance_criteria:
+  - Create notebooks 1.3-exploring-hub.ipynb and 1.7-dataset-exploration.ipynb
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - notebooks
+  - course1
+  - week1
+  notes: null
+- id: PMAT-004
+  github_issue: null
+  item_type: task
+  title: 'Course 1 Week 2: Transformers Fundamentals notebooks'
+  status: planned
+  priority: medium
+  assigned_to: null
+  created: 2026-01-29T08:39:54Z
+  updated: 2026-01-29T08:39:54Z
+  spec: null
+  acceptance_criteria:
+  - Create notebooks 2.2-text-pipelines.ipynb, 2.5-custom-inference.ipynb, 2.8-multi-gpu.ipynb
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - notebooks
+  - course1
+  - week2
+  notes: null
+- id: PMAT-005
+  github_issue: null
+  item_type: task
+  title: 'Course 1 Week 3: Multi-Modal notebooks'
+  status: planned
+  priority: medium
+  assigned_to: null
+  created: 2026-01-29T08:39:54Z
+  updated: 2026-01-29T08:39:54Z
+  spec: null
+  acceptance_criteria:
+  - Create notebooks 3.2-image-classification.ipynb, 3.4-whisper-transcription.ipynb, 3.6-image-captioning.ipynb
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - notebooks
+  - course1
+  - week3
+  notes: null
+- id: PMAT-006
+  github_issue: null
+  item_type: task
+  title: 'Course 2 Week 1: Data Preparation notebooks'
+  status: planned
+  priority: medium
+  assigned_to: null
+  created: 2026-01-29T08:40:02Z
+  updated: 2026-01-29T08:40:02Z
+  spec: null
+  acceptance_criteria:
+  - Create notebooks 1.2-loading-datasets.ipynb, 1.4-preprocessing-pipeline.ipynb, 1.7-custom-dataset.ipynb
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - notebooks
+  - course2
+  - week1
+  notes: null
+- id: PMAT-007
+  github_issue: null
+  item_type: task
+  title: 'Course 2 Week 2: Trainer API notebooks'
+  status: planned
+  priority: medium
+  assigned_to: null
+  created: 2026-01-29T08:40:03Z
+  updated: 2026-01-29T08:40:03Z
+  spec: null
+  acceptance_criteria:
+  - Create notebooks 2.3-first-finetuning.ipynb, 2.5-custom-metrics.ipynb, 2.7-experiment-tracking.ipynb
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - notebooks
+  - course2
+  - week2
+  notes: null
+- id: PMAT-008
+  github_issue: null
+  item_type: task
+  title: 'Course 2 Week 3: Evaluation & Sharing notebooks'
+  status: planned
+  priority: medium
+  assigned_to: null
+  created: 2026-01-29T08:40:03Z
+  updated: 2026-01-29T08:40:03Z
+  spec: null
+  acceptance_criteria:
+  - Create notebooks 3.2-comprehensive-eval.ipynb, 3.4-nlg-evaluation.ipynb, 3.7-publish-model.ipynb
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - notebooks
+  - course2
+  - week3
+  notes: null
+- id: PMAT-009
+  github_issue: null
+  item_type: task
+  title: 'Test suite: unit, integration, notebook tests'
+  status: planned
+  priority: high
+  assigned_to: null
+  created: 2026-01-29T08:40:11Z
+  updated: 2026-01-29T08:40:11Z
+  spec: null
+  acceptance_criteria:
+  - Create pytest tests for all modules with 95% coverage target, nbval notebook validation
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - tests
+  - quality
+  notes: null
+- id: PMAT-010
+  github_issue: null
+  item_type: task
+  title: 'Course readings: markdown documentation'
+  status: planned
+  priority: medium
+  assigned_to: null
+  created: 2026-01-29T08:40:11Z
+  updated: 2026-01-29T08:40:11Z
+  spec: null
+  acceptance_criteria:
+  - Create docs/readings for model cards, licensing, tokenization, training arguments, evaluation metrics
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - docs
+  - readings
+  notes: null
+- id: PMAT-011
+  github_issue: null
+  item_type: task
+  title: Course introduction and README
+  status: planned
+  priority: high
+  assigned_to: null
+  created: 2026-01-29T08:40:11Z
+  updated: 2026-01-29T08:40:11Z
+  spec: null
+  acceptance_criteria:
+  - Create README.md with quick start, course overview, and docs/readings/0.0-course-introduction.md
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - docs
+  - readme
+  notes: null
+- id: PMAT-012
+  github_issue: null
+  item_type: task
+  title: Hero image and diagrams
+  status: planned
+  priority: low
+  assigned_to: null
+  created: 2026-01-29T08:40:11Z
+  updated: 2026-01-29T08:40:11Z
+  spec: null
+  acceptance_criteria:
+  - Create SVG hero image and architecture diagrams for course materials
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - docs
+  - diagrams
+  notes: null

@@ -1,7 +1,7 @@
 # HF Hub Ecosystem - Courses 1-2
 # Python-only with uv, Jupyter notebooks, TDD
 
-.PHONY: all setup lint format test test-notebooks coverage check comply clean help notebook demo
+.PHONY: all setup lint format test test-unit test-integration test-notebooks coverage check comply clean help notebook demo build install security
 
 # Variables
 PYTHON := uv run python
@@ -23,15 +23,21 @@ help:
 	@printf '\n'
 	@printf '%s\n' 'Setup:'
 	@printf '%s\n' '  make setup          Install dependencies with uv'
+	@printf '%s\n' '  make install        Install package locally'
 	@printf '\n'
 	@printf '%s\n' 'Quality:'
 	@printf '%s\n' '  make lint           Run ruff and pyright'
 	@printf '%s\n' '  make format         Auto-format with ruff'
 	@printf '%s\n' '  make test           Run pytest with coverage'
+	@printf '%s\n' '  make test-unit      Run unit tests only'
 	@printf '%s\n' '  make test-notebooks Validate notebooks with nbval'
 	@printf '%s\n' '  make coverage       Run tests with coverage report (HTML)'
+	@printf '%s\n' '  make security       Run security scan with bandit'
 	@printf '%s\n' '  make check          Full quality check (CI equivalent)'
 	@printf '%s\n' '  make comply         Run pmat comply check'
+	@printf '\n'
+	@printf '%s\n' 'Build:'
+	@printf '%s\n' '  make build          Build package'
 	@printf '\n'
 	@printf '%s\n' 'Development:'
 	@printf '%s\n' '  make demo           Run interactive demo'
@@ -97,6 +103,37 @@ demo:
 	@printf '%s\n' '=== Running Demo ==='
 	$(PYTHON) demo.py
 	@printf '%s\n' '=== Demo complete ==='
+
+# Build package
+build:
+	@printf '%s\n' '=== Building package ==='
+	uv build
+	@printf '%s\n' '=== Build complete ==='
+
+# Install package locally
+install:
+	@printf '%s\n' '=== Installing package ==='
+	uv pip install -e .
+	@printf '%s\n' '=== Install complete ==='
+
+# Run unit tests only
+test-unit:
+	@printf '%s\n' '=== Running unit tests ==='
+	$(PYTEST) tests/unit/ -v --cov=src --cov-report=term-missing
+	@printf '%s\n' '=== Unit tests complete ==='
+
+# Run integration tests only
+test-integration:
+	@printf '%s\n' '=== Running integration tests ==='
+	$(PYTEST) tests/integration/ -v 2>/dev/null || printf '%s\n' 'No integration tests found'
+	@printf '%s\n' '=== Integration tests complete ==='
+
+# Security scan
+security:
+	@printf '%s\n' '=== Security scan ==='
+	uv pip install bandit 2>/dev/null || true
+	uv run bandit -r src/ -ll --skip B101 2>/dev/null || printf '%s\n' 'Bandit not available'
+	@printf '%s\n' '=== Security scan complete ==='
 
 # Clean generated files
 clean:

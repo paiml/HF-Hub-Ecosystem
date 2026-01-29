@@ -34,11 +34,38 @@ cd HF-Hub-Ecosystem
 # Setup environment (requires uv)
 make setup
 
+# Run interactive demo
+make demo
+
 # Run linting and tests
 make check
 
 # Launch Jupyter Lab
-make lab
+make notebook
+```
+
+### Demo Output
+
+```
+============================================================
+  HF Hub Ecosystem Demo
+============================================================
+
+>>> Device Detection
+--------------------------------------------------
+  [OK] Detected device: cpu
+  [OK] Recommended device map: cpu
+
+>>> Hub Search
+--------------------------------------------------
+  [..] Searching for sentiment analysis models...
+  [OK]   distilbert-base-uncased-finetuned-sst-2-english (12,345,678 downloads)
+
+>>> Inference Pipeline
+--------------------------------------------------
+  [..] Running inference...
+  [OK]   [+] I love this library!          -> POSITIVE (99.87%)
+  [OK]   [-] This is terrible.             -> NEGATIVE (99.95%)
 ```
 
 ## Usage

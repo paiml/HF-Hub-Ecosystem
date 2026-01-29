@@ -23,11 +23,10 @@ class TestSearchModels:
         assert len(result) == 1
         mock_api.list_models.assert_called_once_with(
             search="bert",
-            task=None,
-            library=None,
+            pipeline_tag=None,
+            filter=None,
             limit=5,
             sort="downloads",
-            direction=-1,
         )
 
     @patch("hf_ecosystem.hub.search.HfApi")
@@ -41,11 +40,10 @@ class TestSearchModels:
 
         mock_api.list_models.assert_called_once_with(
             search=None,
-            task="text-classification",
-            library=None,
+            pipeline_tag="text-classification",
+            filter=None,
             limit=10,
             sort="downloads",
-            direction=-1,
         )
 
     @patch("hf_ecosystem.hub.search.HfApi")
@@ -59,11 +57,10 @@ class TestSearchModels:
 
         mock_api.list_models.assert_called_once_with(
             search=None,
-            task=None,
-            library="transformers",
+            pipeline_tag=None,
+            filter=["transformers"],
             limit=10,
             sort="downloads",
-            direction=-1,
         )
 
 
@@ -88,7 +85,6 @@ class TestSearchDatasets:
             task_categories=None,
             limit=5,
             sort="downloads",
-            direction=-1,
         )
 
     @patch("hf_ecosystem.hub.search.HfApi")
@@ -105,7 +101,6 @@ class TestSearchDatasets:
             task_categories="text-classification",
             limit=10,
             sort="downloads",
-            direction=-1,
         )
 
 
@@ -124,8 +119,8 @@ class TestIterModels:
 
         assert len(result) == 2
         mock_api.list_models.assert_called_once_with(
-            task="text-classification",
-            library=None,
+            pipeline_tag="text-classification",
+            filter=None,
         )
 
     @patch("hf_ecosystem.hub.search.HfApi")
@@ -138,6 +133,6 @@ class TestIterModels:
         list(iter_models(library="transformers"))
 
         mock_api.list_models.assert_called_once_with(
-            task=None,
-            library="transformers",
+            pipeline_tag=None,
+            filter=["transformers"],
         )

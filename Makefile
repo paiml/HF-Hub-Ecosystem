@@ -1,7 +1,7 @@
 # HF Hub Ecosystem - Courses 1-2
 # Python-only with uv, Jupyter notebooks, TDD
 
-.PHONY: all setup lint format test test-notebooks coverage check comply clean help notebook
+.PHONY: all setup lint format test test-notebooks coverage check comply clean help notebook demo
 
 # Variables
 PYTHON := uv run python
@@ -34,6 +34,7 @@ help:
 	@printf '%s\n' '  make comply         Run pmat comply check'
 	@printf '\n'
 	@printf '%s\n' 'Development:'
+	@printf '%s\n' '  make demo           Run interactive demo'
 	@printf '%s\n' '  make notebook       Launch Jupyter Lab'
 	@printf '%s\n' '  make clean          Remove generated files'
 
@@ -90,6 +91,12 @@ comply:
 # Launch Jupyter Lab
 notebook:
 	$(JUPYTER) lab notebooks/
+
+# Run interactive demo
+demo:
+	@printf '%s\n' '=== Running Demo ==='
+	$(PYTHON) demo.py
+	@printf '%s\n' '=== Demo complete ==='
 
 # Clean generated files
 clean:

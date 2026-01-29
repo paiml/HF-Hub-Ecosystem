@@ -23,13 +23,14 @@ def search_models(
         List of ModelInfo objects
     """
     api = HfApi()
+    # Build filter list for library
+    filter_list = [library] if library else None
     models = api.list_models(
         search=query,
-        task=task,
-        library=library,
+        pipeline_tag=task,
+        filter=filter_list,
         limit=limit,
         sort="downloads",
-        direction=-1,
     )
     return list(models)
 
@@ -55,7 +56,6 @@ def search_datasets(
         task_categories=task,
         limit=limit,
         sort="downloads",
-        direction=-1,
     )
     return list(datasets)
 
@@ -74,4 +74,5 @@ def iter_models(
         ModelInfo objects
     """
     api = HfApi()
-    yield from api.list_models(task=task, library=library)
+    filter_list = [library] if library else None
+    yield from api.list_models(pipeline_tag=task, filter=filter_list)

@@ -6,11 +6,11 @@ roadmap:
   github_issue: null
   item_type: task
   title: 'Repository setup: pyproject.toml, Makefile, CI'
-  status: inprogress
+  status: completed
   priority: high
   assigned_to: null
   created: 2026-01-29T08:39:45Z
-  updated: 2026-01-29T08:41:29.054916685+00:00
+  updated: 2026-01-29T08:43:44Z
   spec: null
   acceptance_criteria:
   - Initialize Python repo with uv, create Makefile with lint/test/check targets, setup GitHub Actions CI
@@ -25,11 +25,11 @@ roadmap:
   github_issue: null
   item_type: task
   title: 'Source modules: hf_ecosystem package'
-  status: planned
+  status: inprogress
   priority: high
   assigned_to: null
   created: 2026-01-29T08:39:54Z
-  updated: 2026-01-29T08:39:54Z
+  updated: 2026-01-29T08:43:44.681254554+00:00
   spec: null
   acceptance_criteria:
   - Create src/hf_ecosystem with hub, inference, data, training submodules

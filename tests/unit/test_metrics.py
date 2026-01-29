@@ -66,6 +66,31 @@ class TestComputeMetrics:
 
         assert result["accuracy"] == 0.9
 
+    @patch("hf_ecosystem.training.metrics.evaluate.load")
+    def test_compute_metrics_handles_object_with_attributes(self, mock_load):
+        """compute_metrics should handle EvalPrediction-like objects with attributes."""
+        mock_accuracy = MagicMock()
+        mock_accuracy.compute.return_value = {"accuracy": 0.95}
+        mock_f1 = MagicMock()
+        mock_f1.compute.return_value = {"f1": 0.92}
+
+        def load_evaluator(name):
+            if name == "accuracy":
+                return mock_accuracy
+            return mock_f1
+
+        mock_load.side_effect = load_evaluator
+
+        # Create object with predictions and label_ids attributes
+        eval_pred = MagicMock()
+        eval_pred.predictions = np.array([[0.1, 0.9], [0.8, 0.2], [0.3, 0.7]])
+        eval_pred.label_ids = np.array([1, 0, 1])
+
+        result = compute_metrics(eval_pred)
+
+        assert result["accuracy"] == 0.95
+        assert result["f1"] == 0.92
+
 
 class TestComputeRougeMetrics:
     """Tests for compute_rouge_metrics function."""
@@ -113,6 +138,28 @@ class TestComputeRougeMetrics:
         assert "rouge1" in result
         # Verify the strings were passed to compute
         mock_rouge.compute.assert_called_once()
+
+    @patch("hf_ecosystem.training.metrics.evaluate.load")
+    def test_compute_rouge_metrics_handles_object_with_attributes(self, mock_load):
+        """compute_rouge_metrics should handle objects with attributes."""
+        mock_rouge = MagicMock()
+        mock_rouge.compute.return_value = {
+            "rouge1": 0.8,
+            "rouge2": 0.65,
+            "rougeL": 0.75,
+        }
+        mock_load.return_value = mock_rouge
+
+        # Create object with predictions and label_ids attributes
+        eval_pred = MagicMock()
+        eval_pred.predictions = ["This is a summary.", "Another summary here."]
+        eval_pred.label_ids = ["This is the reference.", "Another reference."]
+
+        result = compute_rouge_metrics(eval_pred)
+
+        assert result["rouge1"] == 0.8
+        assert result["rouge2"] == 0.65
+        assert result["rougeL"] == 0.75
 
 
 class TestComputeBleuMetrics:

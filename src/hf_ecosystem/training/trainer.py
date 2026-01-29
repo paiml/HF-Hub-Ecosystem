@@ -62,7 +62,7 @@ def create_trainer(
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,  # renamed from tokenizer in transformers 5.0
         compute_metrics=compute_metrics,
     )
 

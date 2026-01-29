@@ -35,6 +35,10 @@ dependencies = [
     # Experiment tracking
     "tensorboard>=2.16.0",
 
+    # NLG evaluation metrics
+    "rouge_score>=0.1.2",
+    "nltk>=3.8.0",
+
     # Utilities
     "tqdm>=4.66.0",
     "pandas>=2.2.0",

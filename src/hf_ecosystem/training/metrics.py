@@ -15,7 +15,12 @@ def compute_metrics(eval_pred: Any) -> dict[str, float]:
     Returns:
         Dict of metric names to values
     """
-    predictions, labels = eval_pred
+    # Handle both tuple unpacking and attribute access
+    if hasattr(eval_pred, "predictions"):
+        predictions = eval_pred.predictions
+        labels = eval_pred.label_ids
+    else:
+        predictions, labels = eval_pred
     if isinstance(predictions, tuple):
         predictions = predictions[0]
 
@@ -43,13 +48,18 @@ def compute_rouge_metrics(eval_pred: Any) -> dict[str, float]:
     Returns:
         Dict of ROUGE scores
     """
-    predictions, labels = eval_pred
+    # Handle both tuple unpacking and attribute access
+    if hasattr(eval_pred, "predictions"):
+        predictions = eval_pred.predictions
+        labels = eval_pred.label_ids
+    else:
+        predictions, labels = eval_pred
     rouge = evaluate.load("rouge")
 
     # Decode if needed (assumes string inputs)
-    if isinstance(predictions[0], (list, np.ndarray)):
+    if isinstance(predictions[0], list | np.ndarray):
         predictions = [str(p) for p in predictions]
-    if isinstance(labels[0], (list, np.ndarray)):
+    if isinstance(labels[0], list | np.ndarray):
         labels = [str(label) for label in labels]
 
     result = rouge.compute(predictions=predictions, references=labels)

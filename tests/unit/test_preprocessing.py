@@ -1,11 +1,9 @@
 """Tests for preprocessing utilities."""
 
-import pytest
-
 from hf_ecosystem.data.preprocessing import (
+    create_preprocessing_function,
     preprocess_text,
     tokenize_batch,
-    create_preprocessing_function,
 )
 
 
@@ -51,3 +49,44 @@ def test_create_preprocessing_function(tokenizer):
     examples = {"text": ["Hello world", "Test text"]}
     result = func(examples)
     assert "input_ids" in result
+
+
+def test_create_preprocessing_function_with_labels(tokenizer):
+    """create_preprocessing_function should include labels when present."""
+    func = create_preprocessing_function(
+        tokenizer, text_column="text", label_column="label"
+    )
+
+    examples = {"text": ["Hello world", "Test text"], "label": [0, 1]}
+    result = func(examples)
+
+    assert "input_ids" in result
+    assert "labels" in result
+    assert result["labels"] == [0, 1]
+
+
+def test_create_preprocessing_function_without_label_column(tokenizer):
+    """create_preprocessing_function should skip labels when column missing."""
+    func = create_preprocessing_function(
+        tokenizer, text_column="text", label_column="label"
+    )
+
+    # Examples without label column
+    examples = {"text": ["Hello world", "Test text"]}
+    result = func(examples)
+
+    assert "input_ids" in result
+    assert "labels" not in result
+
+
+def test_create_preprocessing_function_with_none_label_column(tokenizer):
+    """create_preprocessing_function should skip labels when label_column is None."""
+    func = create_preprocessing_function(
+        tokenizer, text_column="text", label_column=None
+    )
+
+    examples = {"text": ["Hello world"], "label": [0]}
+    result = func(examples)
+
+    assert "input_ids" in result
+    assert "labels" not in result

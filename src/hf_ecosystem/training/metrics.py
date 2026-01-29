@@ -2,8 +2,8 @@
 
 from typing import Any
 
-import numpy as np
 import evaluate
+import numpy as np
 
 
 def compute_metrics(eval_pred: Any) -> dict[str, float]:
@@ -24,9 +24,13 @@ def compute_metrics(eval_pred: Any) -> dict[str, float]:
     accuracy = evaluate.load("accuracy")
     f1 = evaluate.load("f1")
 
+    acc_result = accuracy.compute(predictions=predictions, references=labels)
+    f1_result = f1.compute(
+        predictions=predictions, references=labels, average="weighted"
+    )
     return {
-        "accuracy": accuracy.compute(predictions=predictions, references=labels)["accuracy"],
-        "f1": f1.compute(predictions=predictions, references=labels, average="weighted")["f1"],
+        "accuracy": acc_result["accuracy"],
+        "f1": f1_result["f1"],
     }
 
 
@@ -46,7 +50,7 @@ def compute_rouge_metrics(eval_pred: Any) -> dict[str, float]:
     if isinstance(predictions[0], (list, np.ndarray)):
         predictions = [str(p) for p in predictions]
     if isinstance(labels[0], (list, np.ndarray)):
-        labels = [str(l) for l in labels]
+        labels = [str(label) for label in labels]
 
     result = rouge.compute(predictions=predictions, references=labels)
     return {

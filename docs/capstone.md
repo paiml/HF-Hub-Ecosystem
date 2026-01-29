@@ -1,6 +1,6 @@
-# Capstone Project: End-to-End Sentiment Analysis System
+# Capstone Project: Multi-Modal Content Analyzer
 
-**Courses 1-2 Final Project** | Hugging Face ML Specialization
+**Course 1 Final Project** | Hugging Face Hub and Ecosystem Fundamentals
 
 ---
 
@@ -8,521 +8,703 @@
 
 ### Objective
 
-Build a complete sentiment analysis system from scratch, demonstrating mastery of the Hugging Face ecosystem. You will discover and evaluate base models, prepare a custom dataset, fine-tune a transformer, evaluate performance comprehensively, and publish the final model to the Hub.
+Build a multi-modal content analysis system that demonstrates mastery of the Hugging Face Hub and ecosystem. You will discover and compare models across modalities, explore relevant datasets, build inference pipelines for text, images, and audio, and create a unified analysis workflow.
 
 ### Duration
 
-**Estimated Time:** 8-10 hours
+**Estimated Time:** 6-8 hours
 
 ### Prerequisites
 
 - Completion of Course 1 (Hub and Ecosystem Fundamentals)
-- Completion of Course 2 (Fine-Tuning Transformers)
-- Hugging Face account with write access token
+- Hugging Face account (read access)
 
 ---
 
 ## Project Scenario
 
-You are a machine learning engineer at a product company. The product team needs a sentiment classifier for customer reviews that:
+You are a machine learning engineer building a content analysis tool for a media company. The tool needs to:
 
-1. Classifies reviews as **positive**, **negative**, or **neutral**
-2. Works on short-form text (1-3 sentences)
-3. Achieves >85% accuracy on held-out test data
-4. Is published internally for team access
+1. **Classify text** sentiment from article headlines
+2. **Classify images** into content categories
+3. **Transcribe audio** clips from podcasts
+4. **Generate captions** for images
 
-Your task is to build this system using the Hugging Face ecosystem.
-
----
-
-## Phase 1: Model Discovery and Selection
-
-**Duration:** 1 hour
-
-### Objectives
-
-- Search the Hub for suitable base models
-- Compare model architectures and sizes
-- Select an appropriate model for fine-tuning
-
-### Tasks
-
-#### 1.1 Search for Candidate Models
-
-Use the Hub API to find text classification models:
-
-```python
-from huggingface_hub import HfApi
-
-api = HfApi()
-
-# Search for sentiment models
-models = api.list_models(
-    task="text-classification",
-    sort="downloads",
-    direction=-1,
-    limit=20
-)
-
-for model in models:
-    print(f"{model.id}: {model.downloads:,} downloads")
-```
-
-#### 1.2 Evaluate Model Cards
-
-For your top 3 candidates, analyze:
-
-- Training data and domain
-- Model size (parameters)
-- Reported performance metrics
-- License compatibility
-- Last update date
-
-#### 1.3 Select Base Model
-
-Document your selection with justification:
-
-| Criterion | Model A | Model B | Model C |
-|-----------|---------|---------|---------|
-| Size (params) | | | |
-| Training domain | | | |
-| Reported F1 | | | |
-| License | | | |
-| **Selection** | | | |
-
-### Deliverables
-
-- [ ] List of 10+ candidate models from Hub search
-- [ ] Comparison table for top 3 models
-- [ ] Written justification for final selection (100-200 words)
+Your task is to build this system using pre-trained models from the Hugging Face Hub.
 
 ---
 
-## Phase 2: Dataset Preparation
-
-**Duration:** 2 hours
-
-### Objectives
-
-- Load and explore a sentiment dataset
-- Preprocess text for transformer input
-- Create train/validation/test splits
-- Handle class imbalance
-
-### Tasks
-
-#### 2.1 Load Dataset
-
-Use a multi-class sentiment dataset:
-
-```python
-from datasets import load_dataset
-
-# Option 1: Amazon reviews (3-class)
-dataset = load_dataset("amazon_polarity", split="train[:50000]")
-
-# Option 2: Create 3-class from SST-2 + neutral samples
-# Option 3: Use your own customer review data
-```
-
-#### 2.2 Explore Data Distribution
-
-```python
-import pandas as pd
-
-# Analyze class distribution
-df = dataset.to_pandas()
-print(df['label'].value_counts())
-
-# Analyze text lengths
-df['length'] = df['text'].str.len()
-print(df['length'].describe())
-```
-
-#### 2.3 Preprocess Pipeline
-
-Implement a preprocessing function:
-
-```python
-from transformers import AutoTokenizer
-
-tokenizer = AutoTokenizer.from_pretrained("your-base-model")
-
-def preprocess(examples):
-    return tokenizer(
-        examples["text"],
-        truncation=True,
-        padding="max_length",
-        max_length=128,
-    )
-
-tokenized = dataset.map(preprocess, batched=True)
-```
-
-#### 2.4 Create Splits
-
-```python
-# 80% train, 10% validation, 10% test
-splits = tokenized.train_test_split(test_size=0.2, seed=42)
-test_valid = splits["test"].train_test_split(test_size=0.5, seed=42)
-
-dataset_dict = {
-    "train": splits["train"],
-    "validation": test_valid["train"],
-    "test": test_valid["test"],
-}
-```
-
-### Deliverables
-
-- [ ] Dataset loaded with at least 10,000 samples
-- [ ] Class distribution analysis with visualization
-- [ ] Tokenized dataset with train/val/test splits
-- [ ] Preprocessing function documented
-
----
-
-## Phase 3: Model Fine-Tuning
-
-**Duration:** 3 hours
-
-### Objectives
-
-- Configure training arguments
-- Implement custom metrics
-- Train with early stopping
-- Monitor training progress
-
-### Tasks
-
-#### 3.1 Configure Training
-
-```python
-from transformers import TrainingArguments
-
-training_args = TrainingArguments(
-    output_dir="./results",
-    num_train_epochs=3,
-    per_device_train_batch_size=16,
-    per_device_eval_batch_size=32,
-    learning_rate=2e-5,
-    weight_decay=0.01,
-    eval_strategy="steps",
-    eval_steps=500,
-    save_strategy="steps",
-    save_steps=500,
-    load_best_model_at_end=True,
-    metric_for_best_model="f1",
-    logging_dir="./logs",
-    logging_steps=100,
-    report_to=["tensorboard"],
-)
-```
-
-#### 3.2 Implement Metrics
-
-```python
-import evaluate
-import numpy as np
-
-accuracy = evaluate.load("accuracy")
-f1 = evaluate.load("f1")
-precision = evaluate.load("precision")
-recall = evaluate.load("recall")
-
-def compute_metrics(eval_pred):
-    logits, labels = eval_pred
-    predictions = np.argmax(logits, axis=-1)
-
-    return {
-        "accuracy": accuracy.compute(
-            predictions=predictions,
-            references=labels
-        )["accuracy"],
-        "f1": f1.compute(
-            predictions=predictions,
-            references=labels,
-            average="weighted"
-        )["f1"],
-        "precision": precision.compute(
-            predictions=predictions,
-            references=labels,
-            average="weighted"
-        )["precision"],
-        "recall": recall.compute(
-            predictions=predictions,
-            references=labels,
-            average="weighted"
-        )["recall"],
-    }
-```
-
-#### 3.3 Initialize Trainer
-
-```python
-from transformers import AutoModelForSequenceClassification, Trainer
-
-model = AutoModelForSequenceClassification.from_pretrained(
-    "your-base-model",
-    num_labels=3,
-    id2label={0: "negative", 1: "neutral", 2: "positive"},
-    label2id={"negative": 0, "neutral": 1, "positive": 2},
-)
-
-trainer = Trainer(
-    model=model,
-    args=training_args,
-    train_dataset=dataset_dict["train"],
-    eval_dataset=dataset_dict["validation"],
-    tokenizer=tokenizer,
-    compute_metrics=compute_metrics,
-)
-```
-
-#### 3.4 Train and Monitor
-
-```python
-# Train
-trainer.train()
-
-# View TensorBoard
-# tensorboard --logdir ./logs
-```
-
-### Deliverables
-
-- [ ] Training arguments configured with justification
-- [ ] Custom compute_metrics function implemented
-- [ ] Model trained for at least 3 epochs
-- [ ] TensorBoard logs showing training curves
-- [ ] Best checkpoint saved
-
----
-
-## Phase 4: Comprehensive Evaluation
-
-**Duration:** 2 hours
-
-### Objectives
-
-- Evaluate on held-out test set
-- Generate confusion matrix
-- Perform error analysis
-- Document model limitations
-
-### Tasks
-
-#### 4.1 Test Set Evaluation
-
-```python
-# Evaluate on test set
-results = trainer.evaluate(dataset_dict["test"])
-print(f"Test Accuracy: {results['eval_accuracy']:.3f}")
-print(f"Test F1: {results['eval_f1']:.3f}")
-```
-
-#### 4.2 Confusion Matrix
-
-```python
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
-import matplotlib.pyplot as plt
-
-# Get predictions
-predictions = trainer.predict(dataset_dict["test"])
-preds = np.argmax(predictions.predictions, axis=-1)
-labels = predictions.label_ids
-
-# Plot confusion matrix
-cm = confusion_matrix(labels, preds)
-disp = ConfusionMatrixDisplay(cm, display_labels=["negative", "neutral", "positive"])
-disp.plot(cmap="Blues")
-plt.title("Sentiment Classification Confusion Matrix")
-plt.savefig("confusion_matrix.png")
-```
-
-#### 4.3 Error Analysis
-
-Analyze misclassified examples:
-
-```python
-# Find misclassified samples
-errors = []
-for i, (pred, label) in enumerate(zip(preds, labels)):
-    if pred != label:
-        errors.append({
-            "text": dataset_dict["test"][i]["text"],
-            "predicted": pred,
-            "actual": label,
-        })
-
-# Analyze patterns
-print(f"Total errors: {len(errors)}")
-print(f"Error rate: {len(errors) / len(labels):.2%}")
-
-# Show examples
-for error in errors[:10]:
-    print(f"Text: {error['text'][:100]}...")
-    print(f"Predicted: {error['predicted']}, Actual: {error['actual']}\n")
-```
-
-#### 4.4 Document Limitations
-
-Based on error analysis, document:
-
-1. **Common failure modes** (e.g., sarcasm, mixed sentiment)
-2. **Domain limitations** (e.g., specific to product reviews)
-3. **Length constraints** (e.g., performance on very short/long text)
-4. **Bias considerations** (e.g., demographic or cultural biases)
-
-### Deliverables
-
-- [ ] Test set metrics (accuracy ≥85%, F1 ≥0.83)
-- [ ] Confusion matrix visualization
-- [ ] Error analysis with 10+ example failures
-- [ ] Written limitations section (200-300 words)
-
----
-
-## Phase 5: Model Publication
+## Phase 1: Hub Exploration and Model Discovery
 
 **Duration:** 1.5 hours
 
 ### Objectives
 
-- Write comprehensive model card
-- Push model to Hub
-- Configure repository settings
-- Test published model
+- Search the Hub for models across four tasks
+- Compare model options using Hub API
+- Document selection criteria and final choices
 
 ### Tasks
 
-#### 5.1 Create Model Card
+#### 1.1 Text Classification Models
+
+Search for sentiment analysis models:
 
 ```python
-MODEL_CARD = """
----
-license: apache-2.0
-language: en
-tags:
-- text-classification
-- sentiment-analysis
-- transformers
-datasets:
-- amazon_polarity
-metrics:
-- accuracy
-- f1
-pipeline_tag: text-classification
----
+from huggingface_hub import HfApi, ModelFilter
 
-# Sentiment Classifier (3-Class)
+api = HfApi()
 
-## Model Description
-
-Fine-tuned [base-model] for 3-class sentiment classification (positive, neutral, negative).
-
-## Intended Use
-
-- Customer review sentiment analysis
-- Product feedback classification
-- Social media sentiment monitoring
-
-## Training Data
-
-- **Dataset**: Amazon Polarity (subset)
-- **Size**: 40,000 training samples
-- **Classes**: Positive, Neutral, Negative
-
-## Evaluation Results
-
-| Metric | Value |
-|--------|-------|
-| Accuracy | 0.XX |
-| F1 (weighted) | 0.XX |
-| Precision | 0.XX |
-| Recall | 0.XX |
-
-## Limitations
-
-- Trained on English product reviews only
-- May not generalize to other domains (news, social media)
-- Limited handling of sarcasm and irony
-- Maximum input length: 128 tokens
-
-## How to Use
-
-```python
-from transformers import pipeline
-
-classifier = pipeline("text-classification", model="your-username/sentiment-classifier")
-result = classifier("This product is amazing!")
-print(result)
-```
-
-## Training Procedure
-
-- **Base model**: [base-model-name]
-- **Learning rate**: 2e-5
-- **Batch size**: 16
-- **Epochs**: 3
-- **Optimizer**: AdamW with weight decay 0.01
-
-## Citation
-
-If you use this model, please cite:
-
-```bibtex
-@misc{sentiment-classifier-2026,
-  author = {Your Name},
-  title = {3-Class Sentiment Classifier},
-  year = {2026},
-  publisher = {Hugging Face Hub},
-}
-```
-"""
-```
-
-#### 5.2 Push to Hub
-
-```python
-# Save model card
-with open("./results/README.md", "w") as f:
-    f.write(MODEL_CARD)
-
-# Push model and tokenizer
-model.push_to_hub("your-username/sentiment-classifier-3class")
-tokenizer.push_to_hub("your-username/sentiment-classifier-3class")
-```
-
-#### 5.3 Test Published Model
-
-```python
-from transformers import pipeline
-
-# Load from Hub
-classifier = pipeline(
-    "text-classification",
-    model="your-username/sentiment-classifier-3class"
+# Search for text classification models
+text_models = api.list_models(
+    filter=ModelFilter(
+        task="text-classification",
+        library="transformers",
+    ),
+    sort="downloads",
+    direction=-1,
+    limit=15,
 )
 
-# Test predictions
-test_texts = [
-    "This product exceeded my expectations!",
-    "It's okay, nothing special.",
-    "Terrible quality, complete waste of money.",
-]
+print("Top Text Classification Models:")
+for model in text_models:
+    print(f"  {model.id}: {model.downloads:,} downloads")
+```
 
-for text in test_texts:
-    result = classifier(text)
-    print(f"{text}\n  -> {result}\n")
+#### 1.2 Image Classification Models
+
+Search for image classification models:
+
+```python
+# Search for image classification models
+image_models = api.list_models(
+    filter=ModelFilter(
+        task="image-classification",
+        library="transformers",
+    ),
+    sort="downloads",
+    direction=-1,
+    limit=15,
+)
+
+print("\nTop Image Classification Models:")
+for model in image_models:
+    print(f"  {model.id}: {model.downloads:,} downloads")
+```
+
+#### 1.3 Speech Recognition Models
+
+Search for automatic speech recognition models:
+
+```python
+# Search for ASR models
+asr_models = api.list_models(
+    filter=ModelFilter(
+        task="automatic-speech-recognition",
+        library="transformers",
+    ),
+    sort="downloads",
+    direction=-1,
+    limit=15,
+)
+
+print("\nTop ASR Models:")
+for model in asr_models:
+    print(f"  {model.id}: {model.downloads:,} downloads")
+```
+
+#### 1.4 Image Captioning Models
+
+Search for image-to-text models:
+
+```python
+# Search for image captioning models
+caption_models = api.list_models(
+    filter=ModelFilter(
+        task="image-to-text",
+        library="transformers",
+    ),
+    sort="downloads",
+    direction=-1,
+    limit=15,
+)
+
+print("\nTop Image Captioning Models:")
+for model in caption_models:
+    print(f"  {model.id}: {model.downloads:,} downloads")
+```
+
+#### 1.5 Model Card Analysis
+
+For each task, analyze the top 3 model cards:
+
+```python
+from huggingface_hub import model_info
+
+def analyze_model_card(model_id):
+    """Extract key information from model card."""
+    info = api.model_info(model_id)
+    return {
+        "model_id": model_id,
+        "downloads": info.downloads,
+        "likes": info.likes,
+        "license": info.card_data.license if info.card_data else "Unknown",
+        "pipeline_tag": info.pipeline_tag,
+        "tags": info.tags[:5] if info.tags else [],
+    }
+
+# Analyze top candidates
+text_analysis = analyze_model_card("distilbert-base-uncased-finetuned-sst-2-english")
+print(f"Text Model: {text_analysis}")
+```
+
+#### 1.6 Selection Documentation
+
+Create a selection table:
+
+| Task | Model Selected | Parameters | License | Rationale |
+|------|----------------|------------|---------|-----------|
+| Text Classification | | | | |
+| Image Classification | | | | |
+| Speech Recognition | | | | |
+| Image Captioning | | | | |
+
+### Deliverables
+
+- [ ] List of 10+ candidate models per task
+- [ ] Model card analysis for top 3 per task
+- [ ] Selection table with rationale
+- [ ] Written justification (150-200 words)
+
+---
+
+## Phase 2: Dataset Exploration
+
+**Duration:** 1.5 hours
+
+### Objectives
+
+- Load and explore datasets for each modality
+- Understand data formats and structures
+- Use streaming for large datasets
+
+### Tasks
+
+#### 2.1 Text Dataset
+
+Load and explore a text classification dataset:
+
+```python
+from datasets import load_dataset
+
+# Load IMDb for sentiment
+text_dataset = load_dataset("imdb", split="test[:1000]")
+
+print(f"Text Dataset: {len(text_dataset)} samples")
+print(f"Features: {text_dataset.features}")
+print(f"\nSample:")
+print(f"  Text: {text_dataset[0]['text'][:200]}...")
+print(f"  Label: {text_dataset[0]['label']}")
+```
+
+#### 2.2 Image Dataset
+
+Load and explore an image dataset:
+
+```python
+# Load CIFAR-10 for images
+image_dataset = load_dataset("cifar10", split="test[:100]")
+
+print(f"\nImage Dataset: {len(image_dataset)} samples")
+print(f"Features: {image_dataset.features}")
+print(f"Labels: {image_dataset.features['label'].names}")
+
+# Display sample image info
+sample_image = image_dataset[0]["img"]
+print(f"Image size: {sample_image.size}")
+```
+
+#### 2.3 Audio Dataset
+
+Load and explore an audio dataset with streaming:
+
+```python
+# Load Common Voice with streaming (large dataset)
+audio_dataset = load_dataset(
+    "mozilla-foundation/common_voice_11_0",
+    "en",
+    split="test",
+    streaming=True,
+    trust_remote_code=True,
+)
+
+# Get first few samples
+print("\nAudio Dataset (streaming):")
+for i, sample in enumerate(audio_dataset):
+    if i >= 3:
+        break
+    print(f"  Sample {i}: {sample['sentence'][:50]}...")
+    print(f"    Audio: {sample['audio']['sampling_rate']} Hz")
+```
+
+#### 2.4 Dataset Statistics
+
+Analyze dataset distributions:
+
+```python
+import pandas as pd
+
+# Text dataset analysis
+text_df = text_dataset.to_pandas()
+print("\nText Dataset Statistics:")
+print(f"  Label distribution:\n{text_df['label'].value_counts()}")
+text_df['length'] = text_df['text'].str.len()
+print(f"  Text length: mean={text_df['length'].mean():.0f}, max={text_df['length'].max()}")
+
+# Image dataset analysis
+image_df = image_dataset.to_pandas()
+print(f"\nImage Dataset Statistics:")
+print(f"  Label distribution:\n{image_df['label'].value_counts()}")
 ```
 
 ### Deliverables
 
-- [ ] Model card with all required sections
-- [ ] Model pushed to Hub (public or private)
-- [ ] Tokenizer pushed alongside model
-- [ ] Published model tested and working
+- [ ] Three datasets loaded (text, image, audio)
+- [ ] Feature exploration for each dataset
+- [ ] Statistics summary table
+- [ ] Streaming demonstration for large dataset
+
+---
+
+## Phase 3: Building Inference Pipelines
+
+**Duration:** 2 hours
+
+### Objectives
+
+- Create pipelines for all four tasks
+- Handle device placement
+- Process batched inputs
+
+### Tasks
+
+#### 3.1 Device Detection
+
+Set up device management:
+
+```python
+import torch
+
+def get_device():
+    """Detect best available device."""
+    if torch.cuda.is_available():
+        return "cuda"
+    elif torch.backends.mps.is_available():
+        return "mps"
+    return "cpu"
+
+device = get_device()
+print(f"Using device: {device}")
+```
+
+#### 3.2 Text Classification Pipeline
+
+```python
+from transformers import pipeline
+
+# Create text classification pipeline
+text_classifier = pipeline(
+    "text-classification",
+    model="distilbert-base-uncased-finetuned-sst-2-english",
+    device=device,
+)
+
+# Test single prediction
+result = text_classifier("This movie was absolutely fantastic!")
+print(f"Text Classification: {result}")
+
+# Test batch prediction
+texts = [
+    "I love this product, it's amazing!",
+    "Terrible experience, would not recommend.",
+    "It's okay, nothing special.",
+]
+batch_results = text_classifier(texts)
+for text, result in zip(texts, batch_results):
+    print(f"  '{text[:40]}...' -> {result['label']} ({result['score']:.3f})")
+```
+
+#### 3.3 Image Classification Pipeline
+
+```python
+from PIL import Image
+import requests
+from io import BytesIO
+
+# Create image classification pipeline
+image_classifier = pipeline(
+    "image-classification",
+    model="google/vit-base-patch16-224",
+    device=device,
+)
+
+# Load sample image
+url = "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/pipeline-cat-chonk.jpeg"
+response = requests.get(url)
+image = Image.open(BytesIO(response.content))
+
+# Classify
+results = image_classifier(image)
+print(f"\nImage Classification (top 5):")
+for r in results[:5]:
+    print(f"  {r['label']}: {r['score']:.3f}")
+```
+
+#### 3.4 Speech Recognition Pipeline
+
+```python
+# Create ASR pipeline
+asr = pipeline(
+    "automatic-speech-recognition",
+    model="openai/whisper-tiny",
+    device=device,
+)
+
+# Test with sample audio
+audio_sample = next(iter(audio_dataset))
+transcription = asr(audio_sample["audio"]["array"])
+print(f"\nSpeech Recognition:")
+print(f"  Expected: {audio_sample['sentence']}")
+print(f"  Transcribed: {transcription['text']}")
+```
+
+#### 3.5 Image Captioning Pipeline
+
+```python
+# Create image captioning pipeline
+captioner = pipeline(
+    "image-to-text",
+    model="Salesforce/blip-image-captioning-base",
+    device=device,
+)
+
+# Generate caption
+caption = captioner(image)
+print(f"\nImage Caption: {caption[0]['generated_text']}")
+```
+
+#### 3.6 Unified Pipeline Class
+
+Create a unified interface:
+
+```python
+class MultiModalAnalyzer:
+    """Unified multi-modal content analyzer."""
+
+    def __init__(self, device="cpu"):
+        self.device = device
+        self.text_classifier = pipeline(
+            "text-classification",
+            model="distilbert-base-uncased-finetuned-sst-2-english",
+            device=device,
+        )
+        self.image_classifier = pipeline(
+            "image-classification",
+            model="google/vit-base-patch16-224",
+            device=device,
+        )
+        self.asr = pipeline(
+            "automatic-speech-recognition",
+            model="openai/whisper-tiny",
+            device=device,
+        )
+        self.captioner = pipeline(
+            "image-to-text",
+            model="Salesforce/blip-image-captioning-base",
+            device=device,
+        )
+
+    def analyze_text(self, text):
+        """Classify text sentiment."""
+        return self.text_classifier(text)
+
+    def analyze_image(self, image):
+        """Classify image and generate caption."""
+        classification = self.image_classifier(image)
+        caption = self.captioner(image)
+        return {
+            "classification": classification[:3],
+            "caption": caption[0]["generated_text"],
+        }
+
+    def transcribe_audio(self, audio):
+        """Transcribe audio to text."""
+        return self.asr(audio)
+
+# Initialize analyzer
+analyzer = MultiModalAnalyzer(device=device)
+print("MultiModalAnalyzer initialized!")
+```
+
+### Deliverables
+
+- [ ] Four working pipelines (text, image, ASR, caption)
+- [ ] Device detection and placement
+- [ ] Batched inference demonstration
+- [ ] Unified `MultiModalAnalyzer` class
+
+---
+
+## Phase 4: Performance Comparison
+
+**Duration:** 1.5 hours
+
+### Objectives
+
+- Compare multiple models per task
+- Measure inference latency
+- Document trade-offs
+
+### Tasks
+
+#### 4.1 Text Model Comparison
+
+Compare sentiment models:
+
+```python
+import time
+
+text_models = [
+    "distilbert-base-uncased-finetuned-sst-2-english",
+    "cardiffnlp/twitter-roberta-base-sentiment-latest",
+    "nlptown/bert-base-multilingual-uncased-sentiment",
+]
+
+test_texts = [
+    "This is the best thing I've ever seen!",
+    "Absolutely terrible, waste of money.",
+    "It's fine, nothing special.",
+] * 10  # 30 samples
+
+print("Text Model Comparison:")
+print("-" * 60)
+
+for model_id in text_models:
+    classifier = pipeline("text-classification", model=model_id, device=device)
+
+    # Warm up
+    _ = classifier(test_texts[0])
+
+    # Measure latency
+    start = time.time()
+    results = classifier(test_texts)
+    elapsed = time.time() - start
+
+    print(f"{model_id}:")
+    print(f"  Latency: {elapsed:.3f}s ({elapsed/len(test_texts)*1000:.1f}ms/sample)")
+    print(f"  Sample: {results[0]}")
+    print()
+```
+
+#### 4.2 Image Model Comparison
+
+Compare vision models:
+
+```python
+image_models = [
+    "google/vit-base-patch16-224",
+    "microsoft/resnet-50",
+    "facebook/deit-base-distilled-patch16-224",
+]
+
+print("\nImage Model Comparison:")
+print("-" * 60)
+
+for model_id in image_models:
+    classifier = pipeline("image-classification", model=model_id, device=device)
+
+    # Warm up
+    _ = classifier(image)
+
+    # Measure latency (10 iterations)
+    start = time.time()
+    for _ in range(10):
+        results = classifier(image)
+    elapsed = time.time() - start
+
+    print(f"{model_id}:")
+    print(f"  Latency: {elapsed/10*1000:.1f}ms/image")
+    print(f"  Top prediction: {results[0]['label']} ({results[0]['score']:.3f})")
+    print()
+```
+
+#### 4.3 ASR Model Comparison
+
+Compare speech recognition models:
+
+```python
+asr_models = [
+    "openai/whisper-tiny",
+    "openai/whisper-base",
+]
+
+print("\nASR Model Comparison:")
+print("-" * 60)
+
+for model_id in asr_models:
+    asr_pipeline = pipeline("automatic-speech-recognition", model=model_id, device=device)
+
+    # Get audio sample
+    audio_sample = next(iter(audio_dataset))
+
+    # Measure latency
+    start = time.time()
+    result = asr_pipeline(audio_sample["audio"]["array"])
+    elapsed = time.time() - start
+
+    print(f"{model_id}:")
+    print(f"  Latency: {elapsed:.3f}s")
+    print(f"  Transcription: {result['text'][:100]}...")
+    print()
+```
+
+#### 4.4 Results Summary
+
+Create a comparison table:
+
+| Task | Model | Latency | Quality Notes |
+|------|-------|---------|---------------|
+| Text | distilbert-sst-2 | Xms | Fast, English only |
+| Text | roberta-sentiment | Xms | More accurate |
+| Image | vit-base | Xms | Good accuracy |
+| Image | resnet-50 | Xms | Faster |
+| ASR | whisper-tiny | Xs | Fastest |
+| ASR | whisper-base | Xs | Better accuracy |
+
+### Deliverables
+
+- [ ] Comparison of 2-3 models per task
+- [ ] Latency measurements
+- [ ] Trade-off analysis (speed vs. accuracy)
+- [ ] Recommendation summary
+
+---
+
+## Phase 5: Integration Demo
+
+**Duration:** 1 hour
+
+### Objectives
+
+- Create end-to-end demo workflow
+- Process mixed content
+- Generate analysis report
+
+### Tasks
+
+#### 5.1 Demo Content Preparation
+
+```python
+# Prepare demo content
+demo_content = {
+    "headlines": [
+        "Scientists discover breakthrough in renewable energy",
+        "Stock market crashes amid economic uncertainty",
+        "Local team wins championship after dramatic final",
+        "New study raises concerns about social media usage",
+    ],
+    "image_urls": [
+        "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/pipeline-cat-chonk.jpeg",
+    ],
+}
+```
+
+#### 5.2 Full Analysis Workflow
+
+```python
+def analyze_content(analyzer, content):
+    """Run full multi-modal analysis on content."""
+    report = {
+        "text_analysis": [],
+        "image_analysis": [],
+        "summary": {},
+    }
+
+    # Analyze headlines
+    print("Analyzing headlines...")
+    for headline in content["headlines"]:
+        result = analyzer.analyze_text(headline)
+        report["text_analysis"].append({
+            "text": headline,
+            "sentiment": result[0]["label"],
+            "confidence": result[0]["score"],
+        })
+
+    # Analyze images
+    print("Analyzing images...")
+    for url in content["image_urls"]:
+        response = requests.get(url)
+        image = Image.open(BytesIO(response.content))
+        result = analyzer.analyze_image(image)
+        report["image_analysis"].append({
+            "url": url,
+            "classification": result["classification"][0]["label"],
+            "caption": result["caption"],
+        })
+
+    # Generate summary
+    sentiments = [r["sentiment"] for r in report["text_analysis"]]
+    report["summary"] = {
+        "total_headlines": len(content["headlines"]),
+        "positive_count": sentiments.count("POSITIVE"),
+        "negative_count": sentiments.count("NEGATIVE"),
+        "images_processed": len(content["image_urls"]),
+    }
+
+    return report
+
+# Run analysis
+report = analyze_content(analyzer, demo_content)
+```
+
+#### 5.3 Report Generation
+
+```python
+def print_report(report):
+    """Print formatted analysis report."""
+    print("\n" + "=" * 60)
+    print("MULTI-MODAL CONTENT ANALYSIS REPORT")
+    print("=" * 60)
+
+    print("\n📝 TEXT ANALYSIS")
+    print("-" * 40)
+    for item in report["text_analysis"]:
+        emoji = "✅" if item["sentiment"] == "POSITIVE" else "❌"
+        print(f"{emoji} {item['text'][:50]}...")
+        print(f"   Sentiment: {item['sentiment']} ({item['confidence']:.1%})")
+
+    print("\n🖼️ IMAGE ANALYSIS")
+    print("-" * 40)
+    for item in report["image_analysis"]:
+        print(f"Classification: {item['classification']}")
+        print(f"Caption: {item['caption']}")
+
+    print("\n📊 SUMMARY")
+    print("-" * 40)
+    print(f"Headlines analyzed: {report['summary']['total_headlines']}")
+    print(f"  Positive: {report['summary']['positive_count']}")
+    print(f"  Negative: {report['summary']['negative_count']}")
+    print(f"Images processed: {report['summary']['images_processed']}")
+
+print_report(report)
+```
+
+### Deliverables
+
+- [ ] End-to-end demo workflow
+- [ ] Mixed content processing
+- [ ] Formatted analysis report
+- [ ] Working `MultiModalAnalyzer` demonstration
 
 ---
 
@@ -535,93 +717,95 @@ for text in test_texts:
    - Markdown documentation between sections
    - Verification cell at end confirming completion
 
-2. **Model Artifacts**
-   - Trained model pushed to Hub
-   - TensorBoard logs in `./logs/`
-   - Confusion matrix saved as PNG
+2. **Python Module** (`analyzer.py`)
+   - `MultiModalAnalyzer` class
+   - Helper functions
+   - Type hints and docstrings
 
 ### Written Deliverables
 
-1. **Model Selection Justification** (100-200 words)
-2. **Dataset Analysis Summary** (150-250 words)
-3. **Training Configuration Rationale** (100-200 words)
-4. **Error Analysis and Limitations** (200-300 words)
-5. **Model Card** (complete, following template)
+1. **Model Selection Report** (200-300 words)
+   - Models chosen for each task
+   - Selection criteria and rationale
+   - Trade-offs considered
+
+2. **Performance Analysis** (150-200 words)
+   - Latency comparison summary
+   - Recommendations for different use cases
+   - Bottlenecks identified
+
+3. **Reflection** (100-150 words)
+   - What you learned about the HF ecosystem
+   - Challenges encountered
+   - Ideas for extending the project
 
 ### Evaluation Criteria
 
 | Criterion | Points | Requirements |
 |-----------|--------|--------------|
-| **Model Discovery** | 10 | Systematic search, documented comparison |
-| **Data Preparation** | 15 | Clean splits, proper preprocessing |
-| **Training Setup** | 20 | Appropriate hyperparameters, metrics |
-| **Model Performance** | 20 | Accuracy ≥85%, F1 ≥0.83 |
-| **Evaluation Quality** | 15 | Confusion matrix, error analysis |
-| **Model Card** | 10 | Complete, accurate, well-written |
-| **Code Quality** | 10 | Clean, documented, reproducible |
+| **Hub Exploration** | 15 | Systematic search, documented comparison |
+| **Dataset Exploration** | 15 | Three modalities, statistics, streaming |
+| **Pipeline Implementation** | 25 | All four tasks working correctly |
+| **Performance Comparison** | 20 | Multiple models compared, latency measured |
+| **Integration Demo** | 15 | End-to-end workflow, clean output |
+| **Code Quality** | 10 | Clean, documented, type hints |
 
 **Total:** 100 points
 
-**Passing Score:** 75 points
+**Passing Score:** 70 points
 
 ---
 
 ## Bonus Challenges
 
-### Bonus 1: Multi-GPU Training (+5 points)
+### Bonus 1: Zero-Shot Classification (+10 points)
 
-Configure training to use multiple GPUs with accelerate:
+Add zero-shot classification capability:
 
 ```python
-from accelerate import Accelerator
+from transformers import pipeline
 
-accelerator = Accelerator()
-model, optimizer, train_dataloader = accelerator.prepare(
-    model, optimizer, train_dataloader
-)
+zero_shot = pipeline("zero-shot-classification", device=device)
+
+candidate_labels = ["politics", "sports", "technology", "entertainment"]
+result = zero_shot("Apple announces new iPhone with AI features", candidate_labels)
+print(result)
 ```
 
-### Bonus 2: Hyperparameter Search (+5 points)
+### Bonus 2: Visual Question Answering (+10 points)
 
-Use Optuna for hyperparameter optimization:
+Add VQA to image analysis:
 
 ```python
-def hp_space(trial):
-    return {
-        "learning_rate": trial.suggest_float("learning_rate", 1e-5, 5e-5, log=True),
-        "per_device_train_batch_size": trial.suggest_categorical("batch_size", [8, 16, 32]),
-        "num_train_epochs": trial.suggest_int("epochs", 2, 5),
-    }
-
-trainer.hyperparameter_search(
-    hp_space=hp_space,
-    n_trials=10,
-    direction="maximize",
-)
+vqa = pipeline("visual-question-answering", device=device)
+result = vqa(image, "What animal is in the image?")
+print(result)
 ```
 
-### Bonus 3: Inference Optimization (+5 points)
+### Bonus 3: Batch Processing Optimization (+5 points)
 
-Quantize the model for faster inference:
+Optimize for batch processing:
 
 ```python
-from transformers import AutoModelForSequenceClassification
+# Process all texts in a single batch
+results = text_classifier(texts, batch_size=8)
+```
+
+### Bonus 4: Memory Profiling (+5 points)
+
+Profile memory usage:
+
+```python
 import torch
 
-model = AutoModelForSequenceClassification.from_pretrained(
-    "your-username/sentiment-classifier-3class",
-    torch_dtype=torch.float16,
-)
+def get_model_memory(model_id):
+    """Estimate model memory usage."""
+    model = AutoModel.from_pretrained(model_id)
+    param_size = sum(p.numel() * p.element_size() for p in model.parameters())
+    return param_size / (1024 ** 2)  # MB
+
+print(f"Model size: {get_model_memory('distilbert-base-uncased'):.1f} MB")
 ```
-
-### Bonus 4: Custom Dataset (+10 points)
-
-Instead of using an existing dataset, create your own:
-
-1. Collect 1,000+ reviews from a specific domain
-2. Label manually or with weak supervision
-3. Document collection methodology
-4. Analyze inter-annotator agreement (if applicable)
 
 ---
 
@@ -629,47 +813,46 @@ Instead of using an existing dataset, create your own:
 
 ### Documentation
 
-- [Transformers Documentation](https://huggingface.co/docs/transformers)
-- [Datasets Documentation](https://huggingface.co/docs/datasets)
-- [Hub Documentation](https://huggingface.co/docs/hub)
+- [Transformers Pipelines](https://huggingface.co/docs/transformers/main_classes/pipelines)
+- [Hub Python Library](https://huggingface.co/docs/huggingface_hub)
+- [Datasets Library](https://huggingface.co/docs/datasets)
 
-### Recommended Models for Base
+### Recommended Models
 
-| Model | Parameters | Best For |
-|-------|------------|----------|
-| `distilbert-base-uncased` | 66M | Fast training, limited compute |
-| `bert-base-uncased` | 110M | Balanced performance |
-| `roberta-base` | 125M | Higher accuracy |
-| `deberta-v3-small` | 44M | State-of-the-art efficiency |
+| Task | Model | Size | Notes |
+|------|-------|------|-------|
+| Text Classification | `distilbert-base-uncased-finetuned-sst-2-english` | 66M | Fast, accurate |
+| Image Classification | `google/vit-base-patch16-224` | 86M | Good balance |
+| ASR | `openai/whisper-tiny` | 39M | Fastest |
+| Image Captioning | `Salesforce/blip-image-captioning-base` | 247M | Quality captions |
 
-### Recommended Datasets
+### Sample Datasets
 
-| Dataset | Classes | Size | Domain |
-|---------|---------|------|--------|
-| `amazon_polarity` | 2 | 3.6M | Product reviews |
-| `yelp_review_full` | 5 | 650K | Restaurant reviews |
-| `imdb` | 2 | 50K | Movie reviews |
-| `tweet_eval` | 3 | 60K | Twitter |
+| Dataset | Modality | Size | Hub ID |
+|---------|----------|------|--------|
+| IMDb | Text | 50K | `imdb` |
+| CIFAR-10 | Image | 60K | `cifar10` |
+| Common Voice | Audio | 1M+ | `mozilla-foundation/common_voice_11_0` |
 
 ---
 
 ## Frequently Asked Questions
 
-**Q: Can I use a different task instead of sentiment analysis?**
+**Q: Do I need a GPU?**
 
-A: Yes, you may choose text classification tasks like topic classification, intent detection, or spam detection. The rubric remains the same.
+A: No, all tasks can run on CPU. A GPU will significantly speed up inference, especially for image and audio models.
 
-**Q: What if I don't have GPU access?**
+**Q: Can I use different models than suggested?**
 
-A: Use Google Colab (free GPU), or train on CPU with a smaller model (DistilBERT) and reduced dataset size (5,000 samples minimum).
+A: Yes! Part of the exercise is exploring the Hub and finding suitable models. Document your choices.
 
-**Q: Can I fine-tune a larger model like RoBERTa-large?**
+**Q: What if a model download fails?**
 
-A: Yes, but ensure you have adequate compute resources. Larger models require more VRAM and training time.
+A: Check your internet connection and try a smaller model. Some models require authentication - run `huggingface-cli login` if needed.
 
-**Q: What if my accuracy is below 85%?**
+**Q: Can I use my own images/audio?**
 
-A: Document your attempts to improve (hyperparameter tuning, data augmentation, different base models). Partial credit is awarded for systematic effort.
+A: Absolutely! Using your own content demonstrates real-world application.
 
 ---
 

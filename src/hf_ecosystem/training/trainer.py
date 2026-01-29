@@ -1,14 +1,15 @@
 """Trainer creation utilities."""
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
+from datasets import Dataset
 from transformers import (
-    Trainer,
-    TrainingArguments,
     PreTrainedModel,
     PreTrainedTokenizer,
+    Trainer,
+    TrainingArguments,
 )
-from datasets import Dataset
 
 
 def create_trainer(
@@ -51,7 +52,7 @@ def create_trainer(
         weight_decay=weight_decay,
         eval_strategy="epoch" if eval_dataset else "no",
         save_strategy="epoch",
-        load_best_model_at_end=True if eval_dataset else False,
+        load_best_model_at_end=bool(eval_dataset),
         logging_steps=100,
         **kwargs,
     )

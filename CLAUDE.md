@@ -1,4 +1,6 @@
-# HF Hub Ecosystem - Courses 1-2
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
@@ -13,13 +15,22 @@
 make setup
 
 # Quality gates
-make lint
-make test
-make check
+make lint                    # ruff + pyright
+make test                    # pytest with 100% coverage
+make coverage                # pytest with HTML coverage report
+make test-notebooks          # nbval (skips GPU notebooks)
+make check                   # lint + test (CI equivalent)
+
+# Run single test file
+uv run pytest tests/unit/test_device.py -v
+
+# Run single test function
+uv run pytest tests/unit/test_device.py::TestGetDevice::test_get_device_returns_string -v
 
 # Development
-make notebook
-make format
+make notebook                # Launch Jupyter Lab
+make format                  # Auto-fix with ruff
+make comply                  # PMAT compliance check
 ```
 
 ## Development Rules
@@ -40,24 +51,39 @@ make format
 - Use cell tags: `skip-ci`, `raises-exception`, `solution`, `exercise`
 
 ### Quality Requirements
-- 95% test coverage minimum
+- 100% test coverage (enforced by CI)
 - Zero ruff violations
-- Pyright strict mode (where practical)
+- Pyright basic mode (third-party stubs relaxed)
 - `pmat comply check` must pass
 
-## File Organization
+## Architecture
+
+### Source Modules (`src/hf_ecosystem/`)
+
+| Module | Purpose |
+|--------|---------|
+| `hub/` | Hub API wrappers: `search_models()`, `search_datasets()`, `parse_model_card()` |
+| `inference/` | Pipeline creation and device management: `create_pipeline()`, `get_device()` |
+| `data/` | Dataset preprocessing and streaming: `preprocess_text()`, `tokenize_batch()`, `stream_dataset()` |
+| `training/` | Trainer utilities and metrics: `create_trainer()`, `compute_metrics()` |
+
+All public APIs exported via `hf_ecosystem.__init__`.
+
+### Notebooks Structure
 
 ```
-src/hf_ecosystem/       # Source modules
-notebooks/              # Jupyter notebooks by course/week
-tests/                  # pytest tests
-docs/readings/          # Course readings (markdown)
-docs/specifications/    # Technical specifications
+notebooks/
+├── course1/          # Hub and Ecosystem (weeks 1-3)
+│   └── week{1,2,3}/  # Hub navigation, transformers, multi-modal
+└── course2/          # Fine-Tuning (weeks 1-3)
+    └── week{1,2,3}/  # Data prep, Trainer API, evaluation
 ```
+
+Naming: `{lesson_number}-{kebab-case-title}.ipynb` (e.g., `2.5-custom-inference.ipynb`)
 
 ## Commit Messages
 
-Must reference work item:
+Must reference PMAT work item (see `.pmat-work/` for active contracts):
 ```
 feat: Add text pipelines notebook (Refs PMAT-004)
 ```

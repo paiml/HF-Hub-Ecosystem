@@ -1,8 +1,8 @@
 """Dataset streaming utilities."""
 
-from typing import Iterator, Any
+from typing import Any
 
-from datasets import load_dataset, IterableDataset, Dataset
+from datasets import Dataset, IterableDataset, load_dataset
 
 
 def stream_dataset(
@@ -68,6 +68,4 @@ def filter_by_length(
     Returns:
         Filtered dataset
     """
-    return dataset.filter(
-        lambda x: min_length <= len(x[text_column]) <= max_length
-    )
+    return dataset.filter(lambda x: min_length <= len(x[text_column]) <= max_length)

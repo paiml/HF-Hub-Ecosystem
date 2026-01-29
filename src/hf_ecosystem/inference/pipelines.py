@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from transformers import pipeline, Pipeline
+from transformers import Pipeline, pipeline
 
 from hf_ecosystem.inference.device import get_device
 

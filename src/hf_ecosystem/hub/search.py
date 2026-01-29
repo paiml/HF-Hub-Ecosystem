@@ -1,8 +1,8 @@
 """Search utilities for Hugging Face Hub."""
 
-from typing import Iterator
+from collections.abc import Iterator
 
-from huggingface_hub import HfApi, ModelInfo, DatasetInfo
+from huggingface_hub import DatasetInfo, HfApi, ModelInfo
 
 
 def search_models(

@@ -1,6 +1,6 @@
 # Course Outline: Hugging Face Hub and Ecosystem Fundamentals
 
-**Courses 1-2 of 5** | Hugging Face ML Specialization
+**Course 1 of 5** | Hugging Face ML Specialization
 
 ---
 
@@ -126,7 +126,36 @@ This module introduces multi-modal models that work with images, audio, and text
 
 ---
 
-## Course 2: Fine-Tuning Transformers
+## Learning Path Summary
+
+| Week | Focus | Hours |
+|------|-------|-------|
+| 1 | Hub Navigation, Datasets | 4 |
+| 2 | Transformers, Pipelines | 5 |
+| 3 | Multi-Modal Models | 3 |
+
+**Total Duration:** ~12 hours
+
+---
+
+## Prerequisites
+
+- Python programming (intermediate level)
+- Basic understanding of machine learning concepts
+- Familiarity with NumPy and pandas
+- Command line proficiency
+
+## Recommended Background
+
+- Introduction to deep learning
+- Basic NLP concepts (tokenization, embeddings)
+- PyTorch fundamentals (helpful but not required)
+
+---
+
+## Optional Bonus: Course 2 - Fine-Tuning Transformers
+
+> **Note:** Course 2 is optional bonus content for students who want to continue learning about fine-tuning. The capstone project only requires Course 1 completion.
 
 ### Module 2.1: Data Preparation for Fine-Tuning
 
@@ -272,33 +301,15 @@ This module covers publishing fine-tuned models to the Hugging Face Hub, includi
 
 ---
 
-## Learning Path Summary
+### Bonus Course Summary
 
-| Week | Course | Focus | Hours |
-|------|--------|-------|-------|
-| 1 | Course 1 | Hub Navigation, Datasets | 4 |
-| 2 | Course 1 | Transformers, Pipelines | 5 |
-| 3 | Course 1 | Multi-Modal Models | 3 |
-| 4 | Course 2 | Data Preparation | 3 |
-| 5 | Course 2 | Trainer API, Metrics | 6 |
-| 6 | Course 2 | Evaluation, Publishing | 5 |
+| Week | Focus | Hours |
+|------|-------|-------|
+| 4 | Data Preparation | 3 |
+| 5 | Trainer API, Metrics | 6 |
+| 6 | Evaluation, Publishing | 5 |
 
-**Total Duration:** ~26 hours
-
----
-
-## Prerequisites
-
-- Python programming (intermediate level)
-- Basic understanding of machine learning concepts
-- Familiarity with NumPy and pandas
-- Command line proficiency
-
-## Recommended Background
-
-- Introduction to deep learning
-- Basic NLP concepts (tokenization, embeddings)
-- PyTorch fundamentals (helpful but not required)
+**Bonus Duration:** ~14 hours
 
 ---
 
@@ -317,7 +328,8 @@ HF-Hub-Ecosystem/
 │   │   └── roadmap.yaml                    # PMAT work tickets
 │   ├── specifications/
 │   │   └── demo-repo.md                    # Full specification document
-│   └── outline.md                          # This file
+│   ├── outline.md                          # This file
+│   └── capstone.md                         # Capstone project
 ├── notebooks/
 │   ├── course1/
 │   │   ├── week1/
@@ -331,7 +343,7 @@ HF-Hub-Ecosystem/
 │   │       ├── 3.2-image-classification.ipynb # ViT and CLIP
 │   │       ├── 3.4-whisper-transcription.ipynb # Speech-to-text
 │   │       └── 3.6-image-captioning.ipynb  # BLIP captioning
-│   └── course2/
+│   └── course2/                            # (Optional Bonus)
 │       ├── week1/
 │       │   ├── 1.2-loading-datasets.ipynb  # Dataset sources and formats
 │       │   └── 1.7-custom-dataset.ipynb    # Creating custom datasets
@@ -358,7 +370,7 @@ HF-Hub-Ecosystem/
 │       │   ├── __init__.py
 │       │   ├── preprocessing.py            # preprocess_text(), tokenize_batch()
 │       │   └── streaming.py                # stream_dataset()
-│       └── training/
+│       └── training/                       # (Used by Optional Bonus)
 │           ├── __init__.py
 │           ├── trainer.py                  # create_trainer()
 │           └── metrics.py                  # compute_metrics()

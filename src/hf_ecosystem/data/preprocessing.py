@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from transformers import PreTrainedTokenizer, BatchEncoding
+from transformers import BatchEncoding, PreTrainedTokenizer
 
 
 def preprocess_text(

@@ -9,9 +9,22 @@
 [![CI](https://github.com/paiml/HF-Hub-Ecosystem/actions/workflows/ci.yml/badge.svg)](https://github.com/paiml/HF-Hub-Ecosystem/actions/workflows/ci.yml)
 [![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/paiml/HF-Hub-Ecosystem/actions)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![uv](https://img.shields.io/badge/package%20manager-uv-green.svg)](https://github.com/astral-sh/uv)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![TDG Score](https://img.shields.io/badge/TDG-A%20(90.7%25)-brightgreen.svg)](https://github.com/paiml/paiml-mcp-agent-toolkit)
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Quick Start](#quick-start)
+- [Usage](#usage)
+- [Course Structure](#course-structure)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Development](#development)
+- [Project Structure](#project-structure)
+- [Key Dependencies](#key-dependencies)
+- [License](#license)
+- [Contributing](#contributing)
+- [Resources](#resources)
 
 ## Overview
 
@@ -47,25 +60,44 @@ make notebook
 ### Demo Output
 
 ```
-============================================================
-  HF Hub Ecosystem Demo
-============================================================
+╔══════════════════════════════════════════════════════════╗
+║   🤗 HF Hub Ecosystem Demo                               ║
+║   Model search, preprocessing, and inference             ║
+╚══════════════════════════════════════════════════════════╝
 
->>> Device Detection
---------------------------------------------------
-  [OK] Detected device: cpu
-  [OK] Recommended device map: cpu
+▶ Device Detection
+──────────────────────────────────────────────────
+  ✓ Detected device: cpu
+  ✓ Recommended device map: cpu
 
->>> Hub Search
---------------------------------------------------
-  [..] Searching for sentiment analysis models...
-  [OK]   distilbert-base-uncased-finetuned-sst-2-english (12,345,678 downloads)
+▶ Text Preprocessing
+──────────────────────────────────────────────────
+  │ Input:  '  Hello, World!  '
+  │ Output: 'hello, world!'
 
->>> Inference Pipeline
---------------------------------------------------
-  [..] Running inference...
-  [OK]   [+] I love this library!          -> POSITIVE (99.87%)
-  [OK]   [-] This is terrible.             -> NEGATIVE (99.95%)
+▶ Hub Model Search
+──────────────────────────────────────────────────
+  ● Searching for sentiment analysis models...
+  ────────────────────────────────────────────────
+  │ distilbert-base-uncased-finetuned...   (12,345,678 ↓)
+  │ cardiffnlp/twitter-roberta-base...     ( 5,432,100 ↓)
+  ────────────────────────────────────────────────
+
+▶ Sentiment Analysis Pipeline
+──────────────────────────────────────────────────
+  ● Loading model: distilbert-base-uncased-finetuned-sst-2-english
+  ● Running inference...
+  ────────────────────────────────────────────────
+  │ ↑ I absolutely love this library!       POSITIVE (99.9%)
+  │ ↓ This is the worst experience ever.    NEGATIVE (99.9%)
+  │ ↑ The weather today is okay.            POSITIVE (62.5%)
+  ────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════
+║ Demo Complete!
+════════════════════════════════════════════════════════════
+
+  ✓ All demonstrations completed successfully
 ```
 
 ## Usage

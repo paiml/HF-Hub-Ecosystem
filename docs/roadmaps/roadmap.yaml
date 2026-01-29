@@ -25,11 +25,11 @@ roadmap:
   github_issue: null
   item_type: task
   title: 'Source modules: hf_ecosystem package'
-  status: inprogress
+  status: completed
   priority: high
   assigned_to: null
   created: 2026-01-29T08:39:54Z
-  updated: 2026-01-29T08:43:44.681254554+00:00
+  updated: 2026-01-29T08:45:49Z
   spec: null
   acceptance_criteria:
   - Create src/hf_ecosystem with hub, inference, data, training submodules
@@ -44,11 +44,11 @@ roadmap:
   github_issue: null
   item_type: task
   title: 'Course 1 Week 1: Hub Navigation notebooks'
-  status: planned
+  status: inprogress
   priority: medium
   assigned_to: null
   created: 2026-01-29T08:39:54Z
-  updated: 2026-01-29T08:39:54Z
+  updated: 2026-01-29T08:45:49.497606100+00:00
   spec: null
   acceptance_criteria:
   - Create notebooks 1.3-exploring-hub.ipynb and 1.7-dataset-exploration.ipynb
@@ -164,11 +164,11 @@ roadmap:
   github_issue: null
   item_type: task
   title: 'Test suite: unit, integration, notebook tests'
-  status: planned
+  status: completed
   priority: high
   assigned_to: null
   created: 2026-01-29T08:40:11Z
-  updated: 2026-01-29T08:40:11Z
+  updated: 2026-01-29T08:45:49Z
   spec: null
   acceptance_criteria:
   - Create pytest tests for all modules with 95% coverage target, nbval notebook validation

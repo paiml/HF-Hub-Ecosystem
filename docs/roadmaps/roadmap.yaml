@@ -221,11 +221,11 @@ roadmap:
   github_issue: null
   item_type: task
   title: Hero image and diagrams
-  status: planned
+  status: completed
   priority: low
   assigned_to: null
   created: 2026-01-29T08:40:11Z
-  updated: 2026-01-29T08:40:11Z
+  updated: 2026-01-29T08:53:43Z
   spec: null
   acceptance_criteria:
   - Create SVG hero image and architecture diagrams for course materials

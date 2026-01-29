@@ -1,5 +1,9 @@
 # Hugging Face Hub and Ecosystem Fundamentals
 
+<p align="center">
+  <img src="docs/diagrams/hero-image.svg" alt="HF Hub Ecosystem" width="600">
+</p>
+
 **Courses 1-2** of the Hugging Face ML Specialization
 
 [![CI](https://github.com/paiml/HF-Hub-Ecosystem/actions/workflows/ci.yml/badge.svg)](https://github.com/paiml/HF-Hub-Ecosystem/actions/workflows/ci.yml)

@@ -1,0 +1,201 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#020617"/>
+      <stop offset="100%" style="stop-color:#0f172a"/>
+    </linearGradient>
+    <linearGradient id="hfGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff9d00"/>
+      <stop offset="100%" style="stop-color:#ffcc00"/>
+    </linearGradient>
+    <linearGradient id="pythonBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#306998"/>
+      <stop offset="100%" style="stop-color:#4b8bbe"/>
+    </linearGradient>
+    <linearGradient id="pythonYellow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd43b"/>
+      <stop offset="100%" style="stop-color:#ffe873"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="1200" fill="url(#bgGrad)"/>
+
+  <!-- Grid pattern -->
+  <g opacity="0.1" stroke="#64748b" stroke-width="1">
+    <line x1="0" y1="200" x2="1200" y2="200"/>
+    <line x1="0" y1="400" x2="1200" y2="400"/>
+    <line x1="0" y1="600" x2="1200" y2="600"/>
+    <line x1="0" y1="800" x2="1200" y2="800"/>
+    <line x1="0" y1="1000" x2="1200" y2="1000"/>
+    <line x1="200" y1="0" x2="200" y2="1200"/>
+    <line x1="400" y1="0" x2="400" y2="1200"/>
+    <line x1="600" y1="0" x2="600" y2="1200"/>
+    <line x1="800" y1="0" x2="800" y2="1200"/>
+    <line x1="1000" y1="0" x2="1000" y2="1200"/>
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="120" font-family="Inter, system-ui, sans-serif" font-size="52" font-weight="700" fill="#f8fafc" text-anchor="middle">Hugging Face Hub</text>
+  <text x="600" y="175" font-family="Inter, system-ui, sans-serif" font-size="36" font-weight="400" fill="#94a3b8" text-anchor="middle">and Ecosystem Fundamentals</text>
+
+  <!-- Central HuggingFace Logo Area -->
+  <g transform="translate(600, 420)">
+    <!-- Outer ring -->
+    <circle cx="0" cy="0" r="180" fill="none" stroke="url(#hfGrad)" stroke-width="4" opacity="0.6"/>
+    <circle cx="0" cy="0" r="150" fill="#0f172a" stroke="url(#hfGrad)" stroke-width="3"/>
+
+    <!-- HF Face Icon (simplified) -->
+    <g transform="translate(-80, -80) scale(1.6)">
+      <!-- Face outline -->
+      <circle cx="50" cy="50" r="45" fill="url(#hfGrad)" opacity="0.2"/>
+      <circle cx="50" cy="50" r="45" fill="none" stroke="url(#hfGrad)" stroke-width="3"/>
+      <!-- Eyes -->
+      <circle cx="35" cy="42" r="6" fill="url(#hfGrad)"/>
+      <circle cx="65" cy="42" r="6" fill="url(#hfGrad)"/>
+      <!-- Smile -->
+      <path d="M30 60 Q50 80 70 60" fill="none" stroke="url(#hfGrad)" stroke-width="4" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- Course 1 Panel (Left) -->
+  <g transform="translate(120, 280)">
+    <rect x="0" y="0" width="280" height="340" rx="16" fill="#0f172a" stroke="#1e3a8a" stroke-width="2"/>
+    <rect x="0" y="0" width="280" height="50" rx="16" fill="#1e3a8a"/>
+    <rect x="0" y="25" width="280" height="25" fill="#1e3a8a"/>
+    <text x="140" y="33" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="600" fill="#f8fafc" text-anchor="middle">Course 1</text>
+
+    <text x="140" y="85" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#60a5fa" text-anchor="middle">Hub Navigation</text>
+
+    <!-- Icons for Course 1 topics -->
+    <g transform="translate(30, 110)">
+      <rect x="0" y="0" width="220" height="45" rx="8" fill="#1e293b"/>
+      <text x="15" y="28" font-family="JetBrains Mono, monospace" font-size="13" fill="#22c55e">list_models()</text>
+    </g>
+    <g transform="translate(30, 165)">
+      <rect x="0" y="0" width="220" height="45" rx="8" fill="#1e293b"/>
+      <text x="15" y="28" font-family="JetBrains Mono, monospace" font-size="13" fill="#22c55e">pipeline()</text>
+    </g>
+    <g transform="translate(30, 220)">
+      <rect x="0" y="0" width="220" height="45" rx="8" fill="#1e293b"/>
+      <text x="15" y="28" font-family="JetBrains Mono, monospace" font-size="13" fill="#22c55e">AutoModel</text>
+    </g>
+    <g transform="translate(30, 275)">
+      <rect x="0" y="0" width="220" height="45" rx="8" fill="#1e293b"/>
+      <text x="15" y="28" font-family="JetBrains Mono, monospace" font-size="13" fill="#f59e0b">Multi-Modal</text>
+    </g>
+  </g>
+
+  <!-- Course 2 Panel (Right) -->
+  <g transform="translate(800, 280)">
+    <rect x="0" y="0" width="280" height="340" rx="16" fill="#0f172a" stroke="#7c3aed" stroke-width="2"/>
+    <rect x="0" y="0" width="280" height="50" rx="16" fill="#7c3aed"/>
+    <rect x="0" y="25" width="280" height="25" fill="#7c3aed"/>
+    <text x="140" y="33" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="600" fill="#f8fafc" text-anchor="middle">Course 2</text>
+
+    <text x="140" y="85" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#a78bfa" text-anchor="middle">Fine-Tuning</text>
+
+    <!-- Icons for Course 2 topics -->
+    <g transform="translate(30, 110)">
+      <rect x="0" y="0" width="220" height="45" rx="8" fill="#1e293b"/>
+      <text x="15" y="28" font-family="JetBrains Mono, monospace" font-size="13" fill="#22c55e">datasets.load()</text>
+    </g>
+    <g transform="translate(30, 165)">
+      <rect x="0" y="0" width="220" height="45" rx="8" fill="#1e293b"/>
+      <text x="15" y="28" font-family="JetBrains Mono, monospace" font-size="13" fill="#22c55e">Trainer()</text>
+    </g>
+    <g transform="translate(30, 220)">
+      <rect x="0" y="0" width="220" height="45" rx="8" fill="#1e293b"/>
+      <text x="15" y="28" font-family="JetBrains Mono, monospace" font-size="13" fill="#22c55e">evaluate()</text>
+    </g>
+    <g transform="translate(30, 275)">
+      <rect x="0" y="0" width="220" height="45" rx="8" fill="#1e293b"/>
+      <text x="15" y="28" font-family="JetBrains Mono, monospace" font-size="13" fill="#f59e0b">push_to_hub()</text>
+    </g>
+  </g>
+
+  <!-- Bottom Section - Tech Stack -->
+  <g transform="translate(0, 700)">
+    <!-- Python badge -->
+    <g transform="translate(200, 50)">
+      <rect x="0" y="0" width="160" height="70" rx="12" fill="#1e293b" stroke="#306998" stroke-width="2"/>
+      <text x="80" y="30" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#4b8bbe" text-anchor="middle">Python</text>
+      <text x="80" y="52" font-family="JetBrains Mono, monospace" font-size="12" fill="#94a3b8" text-anchor="middle">3.11+</text>
+    </g>
+
+    <!-- uv badge -->
+    <g transform="translate(400, 50)">
+      <rect x="0" y="0" width="160" height="70" rx="12" fill="#1e293b" stroke="#22c55e" stroke-width="2"/>
+      <text x="80" y="30" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#22c55e" text-anchor="middle">uv</text>
+      <text x="80" y="52" font-family="JetBrains Mono, monospace" font-size="12" fill="#94a3b8" text-anchor="middle">Package Mgr</text>
+    </g>
+
+    <!-- Jupyter badge -->
+    <g transform="translate(600, 50)">
+      <rect x="0" y="0" width="160" height="70" rx="12" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+      <text x="80" y="30" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#f59e0b" text-anchor="middle">Jupyter</text>
+      <text x="80" y="52" font-family="JetBrains Mono, monospace" font-size="12" fill="#94a3b8" text-anchor="middle">Notebooks</text>
+    </g>
+
+    <!-- Transformers badge -->
+    <g transform="translate(800, 50)">
+      <rect x="0" y="0" width="160" height="70" rx="12" fill="#1e293b" stroke="url(#hfGrad)" stroke-width="2"/>
+      <text x="80" y="30" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#ffcc00" text-anchor="middle">Transformers</text>
+      <text x="80" y="52" font-family="JetBrains Mono, monospace" font-size="12" fill="#94a3b8" text-anchor="middle">4.40+</text>
+    </g>
+  </g>
+
+  <!-- Week boxes at bottom -->
+  <g transform="translate(120, 870)">
+    <text x="480" y="0" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="600" fill="#f8fafc" text-anchor="middle">6 Weeks of Hands-On Labs</text>
+
+    <!-- Week indicators -->
+    <g transform="translate(0, 30)">
+      <rect x="0" y="0" width="140" height="60" rx="8" fill="#1e3a8a" opacity="0.8"/>
+      <text x="70" y="25" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#f8fafc" text-anchor="middle">Week 1-3</text>
+      <text x="70" y="45" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">Hub &amp; Inference</text>
+    </g>
+    <g transform="translate(160, 30)">
+      <rect x="0" y="0" width="140" height="60" rx="8" fill="#1e3a8a" opacity="0.6"/>
+      <text x="70" y="25" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#f8fafc" text-anchor="middle">Week 4-6</text>
+      <text x="70" y="45" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">Fine-Tuning</text>
+    </g>
+    <g transform="translate(320, 30)">
+      <rect x="0" y="0" width="140" height="60" rx="8" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+      <text x="70" y="25" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#22c55e" text-anchor="middle">14</text>
+      <text x="70" y="45" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">Notebooks</text>
+    </g>
+    <g transform="translate(480, 30)">
+      <rect x="0" y="0" width="140" height="60" rx="8" fill="#0f172a" stroke="#f59e0b" stroke-width="2"/>
+      <text x="70" y="25" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#f59e0b" text-anchor="middle">TDD</text>
+      <text x="70" y="45" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">Quality Gates</text>
+    </g>
+    <g transform="translate(640, 30)">
+      <rect x="0" y="0" width="140" height="60" rx="8" fill="#0f172a" stroke="#7c3aed" stroke-width="2"/>
+      <text x="70" y="25" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#7c3aed" text-anchor="middle">95%</text>
+      <text x="70" y="45" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">Coverage</text>
+    </g>
+    <g transform="translate(800, 30)">
+      <rect x="0" y="0" width="140" height="60" rx="8" fill="#0f172a" stroke="#14b8a6" stroke-width="2"/>
+      <text x="70" y="25" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#14b8a6" text-anchor="middle">CI/CD</text>
+      <text x="70" y="45" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">GitHub Actions</text>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="1050" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#64748b" text-anchor="middle">Courses 1-2 of 5 | Hugging Face ML Specialization</text>
+  <text x="600" y="1080" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#475569" text-anchor="middle">paiml/HF-Hub-Ecosystem</text>
+
+  <!-- Connection lines from center to panels -->
+  <g stroke="#334155" stroke-width="2" stroke-dasharray="8,4" opacity="0.5">
+    <line x1="420" y1="420" x2="400" y2="400"/>
+    <line x1="780" y1="420" x2="800" y2="400"/>
+  </g>
+</svg>

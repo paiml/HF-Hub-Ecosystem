@@ -52,8 +52,8 @@ repos:
     hooks:
       - id: pyright
         name: pyright
-        entry: uv run pyright
+        entry: uv run pyright src/
         language: system
-        types: [python]
         pass_filenames: false
+        files: ^src/
 

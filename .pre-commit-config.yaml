@@ -15,3 +15,14 @@ repos:
       - id: check-added-large-files
         args: ['--maxkb=5000']
       - id: check-merge-conflict
+      - id: detect-private-key
+      - id: check-json
+
+  - repo: local
+    hooks:
+      - id: pyright
+        name: pyright
+        entry: uv run pyright
+        language: system
+        types: [python]
+        pass_filenames: false

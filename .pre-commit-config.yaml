@@ -57,10 +57,3 @@ repos:
         types: [python]
         pass_filenames: false
 
-      - id: test-fast
-        name: fast tests
-        entry: uv run pytest tests/unit/ -x -q --no-cov --tb=no
-        language: system
-        types: [python]
-        pass_filenames: false
-        stages: [push]

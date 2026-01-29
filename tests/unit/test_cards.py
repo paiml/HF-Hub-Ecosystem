@@ -58,7 +58,8 @@ class TestParseModelCard:
         # Setup mock model card
         mock_card_instance = MagicMock()
         mock_card_instance.text = "# Test Model"
-        mock_card_instance.data = {"language": "en"}
+        mock_card_instance.data = MagicMock()
+        mock_card_instance.data.to_dict.return_value = {"language": "en"}
         mock_card.load.return_value = mock_card_instance
 
         result = parse_model_card("test-model")

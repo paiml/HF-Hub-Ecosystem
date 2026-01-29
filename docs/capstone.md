@@ -21,7 +21,7 @@ This capstone project demonstrates mastery of the Hugging Face Hub and ecosystem
 A content analysis tool for a media company that:
 
 1. **Classifies text** sentiment from article headlines
-2. **Classifies images** into content categories  
+2. **Classifies images** into content categories
 3. **Transcribes audio** clips from podcasts
 4. **Generates captions** for images
 
@@ -54,7 +54,7 @@ text_models = api.list_models(
     limit=15,
 )
 
-# Image classification models  
+# Image classification models
 image_models = api.list_models(
     filter=ModelFilter(task="image-classification", library="transformers"),
     sort="downloads",
@@ -226,12 +226,11 @@ asr = pipeline(
     device=device,
 )
 
-# Image captioning
-captioner = pipeline(
-    "image-to-text",
-    model="Salesforce/blip-image-captioning-base",
-    device=device,
-)
+# Image captioning (use "image-text-to-text" in transformers 5.0+)
+# For pure captioning, use manual inference:
+from transformers import BlipProcessor, BlipForConditionalGeneration
+blip_processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
 ```
 
 ### 3.3 Unified Analyzer Class
@@ -254,16 +253,15 @@ class MultiModalAnalyzer:
             model="google/vit-base-patch16-224",
             device=device,
         )
-        self.asr = pipeline(
-            "automatic-speech-recognition",
-            model="openai/whisper-tiny",
-            device=device,
-        )
-        self.captioner = pipeline(
-            "image-to-text",
-            model="Salesforce/blip-image-captioning-base",
-            device=device,
-        )
+        # ASR using manual inference (transformers 5.0 pipeline has issues)
+        from transformers import WhisperProcessor, WhisperForConditionalGeneration
+        self.whisper_processor = WhisperProcessor.from_pretrained("openai/whisper-tiny")
+        self.whisper_model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-tiny")
+
+        # Captioning using manual inference (transformers 5.0 renamed task)
+        from transformers import BlipProcessor, BlipForConditionalGeneration
+        self.blip_processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+        self.blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
 
     def analyze_text(self, text):
         """Classify text sentiment."""
@@ -272,15 +270,20 @@ class MultiModalAnalyzer:
     def analyze_image(self, image):
         """Classify image and generate caption."""
         classification = self.image_classifier(image)
-        caption = self.captioner(image)
+        # Manual captioning inference
+        inputs = self.blip_processor(image, return_tensors="pt")
+        output = self.blip_model.generate(**inputs, max_new_tokens=50)
+        caption = self.blip_processor.decode(output[0], skip_special_tokens=True)
         return {
             "classification": classification[:3],
-            "caption": caption[0]["generated_text"],
+            "caption": caption,
         }
 
     def transcribe_audio(self, audio):
         """Transcribe audio to text."""
-        return self.asr(audio)
+        inputs = self.whisper_processor(audio["array"], sampling_rate=audio["sampling_rate"], return_tensors="pt")
+        generated_ids = self.whisper_model.generate(inputs["input_features"], language="en", task="transcribe")
+        return {"text": self.whisper_processor.batch_decode(generated_ids, skip_special_tokens=True)[0]}
 ```
 
 ---
@@ -565,13 +568,13 @@ del analyzer.captioner  # Free memory
 import gc; gc.collect()  # Force garbage collection
 ```
 
-**Can I use different models?**  
+**Can I use different models?**
 Yes! Exploring the Hub and documenting your choices is part of the exercise.
 
-**What if a model download fails?**  
+**What if a model download fails?**
 Check your connection and try a smaller model. Some models require authentication—run `huggingface-cli login` if needed.
 
-**Can I use my own content?**  
+**Can I use my own content?**
 Absolutely. Using your own images or audio demonstrates real-world application.
 
 ---
@@ -590,5 +593,5 @@ See the [repository README](https://github.com/paiml/HF-Hub-Ecosystem) for full 
 
 ---
 
-*Course 1 of the Hugging Face ML Specialization*  
+*Course 1 of the Hugging Face ML Specialization*
 *Last Updated: January 2026*

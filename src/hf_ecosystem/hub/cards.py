@@ -42,7 +42,7 @@ def parse_model_card(model_id: str) -> ParsedModelCard:
         downloads=info.downloads or 0,
         likes=info.likes or 0,
         text=card.text or "",
-        metadata=dict(card.data) if card.data else {},
+        metadata=card.data.to_dict() if card.data else {},
     )
 
 

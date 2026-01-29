@@ -26,6 +26,7 @@ dependencies = [
     "librosa>=0.10.0",
     "soundfile>=0.12.0",
     "numba>=0.57.0",  # Required for Python 3.11+ support
+    "torchcodec>=0.1.0",  # Audio decoding for datasets library
 
     # Notebooks
     "jupyterlab>=4.1.0",

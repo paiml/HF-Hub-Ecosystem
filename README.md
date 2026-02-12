@@ -275,3 +275,4 @@ Apache 2.0 - See [LICENSE](LICENSE) for details.
 - [Transformers Documentation](https://huggingface.co/docs/transformers)
 - [Datasets Documentation](https://huggingface.co/docs/datasets)
 - [Course Specification](docs/specifications/demo-repo.md)
+- 🤖 [Coursera Hugging Face AI Development Specialization](https://www.coursera.org/specializations/hugging-face-ai-development) - Build Production AI systems with Hugging Face in Pure Rust
